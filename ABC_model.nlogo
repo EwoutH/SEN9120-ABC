@@ -1,10 +1,14 @@
 extensions [gis rnd]
 globals [parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection]
+
 breed [spots spot]
 breed [households household]
+breed [residents resident]
+
 patches-own [station?]
 spots-own [capacity]
-households-own [driveway distance-spot distance-station]
+households-own [driveway distance-spot distance-station child-wish]
+residents-own [household-nr age parent?]
 
 to setup
   clear-all
@@ -46,6 +50,18 @@ to setup-spots
   ]
 end
 
+to setup-station
+  ask patches [set station? false]
+  foreach gis:feature-list-of station-dataset [ this-vector-feature ->
+    let center gis:centroid-of this-vector-feature
+    let loc gis:location-of center
+
+    if length loc >= 2 [
+      ask patch item 0 loc item 1 loc [set pcolor yellow set station? true]
+    ]
+  ]
+end
+
 to setup-households
   foreach gis:feature-list-of houses-dataset [ this-vector-feature ->
     let center gis:centroid-of this-vector-feature
@@ -61,21 +77,48 @@ to setup-households
         set distance-spot distance min-one-of spots [distance myself]
         set distance-station distance one-of patches with [station?]
 
+        setup-residents
+      ]
+    ]
+  ]
+  ask n-of 5 households [type "Household ages: " ask residents with [household-nr = myself] [type age type ", "] print ""]
+end
+
+to setup-residents
+  ;; Create between 1 and 2 adults with an age within a few years of eachother
+  let intial-adults first rnd:weighted-one-of-list [[1 0.1] [2 0.9]] [[p] -> last p]
+  let approximate-adults-age 25 + random 41
+  hatch-residents intial-adults [
+    set parent? true
+    set age approximate-adults-age + random 4 - 3
+    set color yellow
+    set-resident-properties]
+
+  ;; Determine their child wish and the approximate age of their childeren (between 20 and 30 years younger)
+  set child-wish first rnd:weighted-one-of-list [[0 0.2] [1 0.35] [2 0.35] [3 0.1]] [[p] -> last p]
+  let approximate-child-age approximate-adults-age - 20 - random 11
+
+  ;; For each child, determine if they either A) have already moved out, B) are not born yet or C) are living with them, and adjust the child wish accordingly
+  foreach range child-wish [
+    let predicted-child-age approximate-child-age + random 6 - 4
+    if predicted-child-age > 0 [ ;; if born
+      set child-wish child-wish - 1
+      if predicted-child-age < (18 + random 8) [ ;; if also still living at home
+        hatch-residents 1 [
+          set parent? false
+          set age predicted-child-age
+          set color orange
+          set-resident-properties
+        ]
       ]
     ]
   ]
 end
 
-to setup-station
-  ask patches [set station? false]
-  foreach gis:feature-list-of station-dataset [ this-vector-feature ->
-    let center gis:centroid-of this-vector-feature
-    let loc gis:location-of center
-
-    if length loc >= 2 [
-      ask patch item 0 loc item 1 loc [set pcolor yellow set station? true]
-    ]
-  ]
+to set-resident-properties
+  set size 0.3
+  set heading random 360
+  set household-nr myself
 end
 
 to draw
@@ -183,6 +226,28 @@ MONITOR
 172
 private parking
 sum [driveway] of households
+17
+1
+11
+
+MONITOR
+116
+218
+173
+263
+parents
+count residents with [parent?]
+17
+1
+11
+
+MONITOR
+115
+270
+176
+315
+childeren
+count residents with [not parent?]
 17
 1
 11
