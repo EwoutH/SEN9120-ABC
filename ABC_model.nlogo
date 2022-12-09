@@ -81,7 +81,7 @@ to setup-households
       ]
     ]
   ]
-  ask n-of 5 households [type "Household ages: " ask residents with [household-nr = myself] [type age type ", "] print ""]
+  ask n-of 10 households [type "Household ages: " ask residents with [household-nr = myself] [type age type ", "] type "child wish: " print child-wish]
 end
 
 to setup-residents
@@ -248,6 +248,17 @@ MONITOR
 315
 childeren
 count residents with [not parent?]
+17
+1
+11
+
+MONITOR
+117
+354
+202
+399
+total child wish
+sum [child-wish] of households
 17
 1
 11
