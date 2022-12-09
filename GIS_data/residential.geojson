@@ -1,0 +1,94 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-ide",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2022-11-27T12:32:10Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/973084286",
+        "landuse": "residential",
+        "name": "Enka",
+        "residential": "single_family",
+        "website": "https://enka-ede.nl/"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              5.6734014,
+              52.0271485
+            ],
+            [
+              5.6724859,
+              52.0244462
+            ],
+            [
+              5.6723056,
+              52.0239329
+            ],
+            [
+              5.6723596,
+              52.0233992
+            ],
+            [
+              5.672658,
+              52.0217037
+            ],
+            [
+              5.6766108,
+              52.0218951
+            ],
+            [
+              5.676927,
+              52.0219113
+            ],
+            [
+              5.677044,
+              52.0219176
+            ],
+            [
+              5.6815717,
+              52.0209829
+            ],
+            [
+              5.684369,
+              52.0209946
+            ],
+            [
+              5.6843841,
+              52.0207828
+            ],
+            [
+              5.6849781,
+              52.0207976
+            ],
+            [
+              5.6859388,
+              52.0243939
+            ],
+            [
+              5.6836524,
+              52.0248108
+            ],
+            [
+              5.6834035,
+              52.0251395
+            ],
+            [
+              5.6756438,
+              52.0267305
+            ],
+            [
+              5.6734014,
+              52.0271485
+            ]
+          ]
+        ]
+      },
+      "id": "way/973084286"
+    }
+  ]
+}
