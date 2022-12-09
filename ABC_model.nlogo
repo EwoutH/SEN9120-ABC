@@ -4,15 +4,15 @@ breed [spots spot]
 breed [households household]
 patches-own [station?]
 spots-own [capacity]
-households-own [driveway]
+households-own [driveway distance-spot distance-station]
 
 to setup
   clear-all
   load
   draw
   setup-spots
-  setup-households
   setup-station
+  setup-households
 end
 
 to load
@@ -54,16 +54,19 @@ to setup-households
       create-households 1 [
         setxy item 0 loc item 1 loc
         set driveway random 3
-        set label driveway
         set shape "house"
         set color blue
         set size 0.1
+        set distance-spot distance min-one-of spots [distance myself]
+        set distance-station distance one-of patches with [station?]
+
       ]
     ]
   ]
 end
 
 to setup-station
+  ask patches [set station? false]
   foreach gis:feature-list-of station-dataset [ this-vector-feature ->
     let center gis:centroid-of this-vector-feature
     let loc gis:location-of center
