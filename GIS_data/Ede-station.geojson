@@ -1,0 +1,31 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-ide",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2022-12-09T12:02:54Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/44920604",
+        "name": "Ede-Wageningen",
+        "public_transport": "station",
+        "railway": "station",
+        "railway:ref": "Ed",
+        "train": "yes",
+        "wheelchair": "yes",
+        "wikidata": "Q388365",
+        "wikipedia": "nl:Station Ede-Wageningen",
+        "zone": "4051"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.6722729,
+          52.0277348
+        ]
+      },
+      "id": "node/44920604"
+    }
+  ]
+}
