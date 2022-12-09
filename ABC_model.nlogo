@@ -1,4 +1,4 @@
-extensions [gis]
+extensions [gis rnd]
 globals [parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection]
 breed [spots spot]
 breed [households household]
@@ -36,6 +36,7 @@ to setup-spots
       create-spots 1 [
         setxy item 0 loc item 1 loc
         set capacity gis:property-value this-vector-feature "capacity"
+        if capacity != "" [set capacity read-from-string capacity]
         set shape "square"
         set color red
         set size 0.1
@@ -53,7 +54,7 @@ to setup-households
     if length loc >= 2 [
       create-households 1 [
         setxy item 0 loc item 1 loc
-        set driveway random 3
+        set driveway first rnd:weighted-one-of-list [[0 0.8] [1 0.15] [2 0.05]] [[p] -> last p]
         set shape "house"
         set color blue
         set size 0.1
@@ -152,6 +153,39 @@ NIL
 NIL
 NIL
 1
+
+MONITOR
+113
+23
+195
+68
+households
+count households
+17
+1
+11
+
+MONITOR
+116
+76
+197
+121
+public parking
+sum [capacity] of spots with [is-number? capacity]
+17
+1
+11
+
+MONITOR
+116
+127
+200
+172
+private parking
+sum [driveway] of households
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
