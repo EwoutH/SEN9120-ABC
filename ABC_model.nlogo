@@ -1,13 +1,18 @@
 extensions [gis]
-globals [parking-dataset residential-dataset grass-dataset houses-dataset projection]
+globals [parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection]
 breed [spots spot]
+breed [households household]
+patches-own [station?]
 spots-own [capacity]
+households-own [driveway]
 
 to setup
   clear-all
   load
   draw
   setup-spots
+  setup-households
+  setup-station
 end
 
 to load
@@ -16,7 +21,8 @@ to load
   set residential-dataset gis:load-dataset "GIS_data/residential.geojson"
   set grass-dataset gis:load-dataset "GIS_data/grass.geojson"
   set houses-dataset gis:load-dataset "GIS_data/houses.geojson"
-  gis:set-world-envelope (list 5.6716 5.6860 52.0275 52.0206)
+  set station-dataset gis:load-dataset "GIS_data/Ede-station.geojson"
+  gis:set-world-envelope (list 5.6716 5.6860 52.0280 52.0206)
 end
 
 to setup-spots
@@ -35,6 +41,35 @@ to setup-spots
         set size 0.1
         set label capacity
       ]
+    ]
+  ]
+end
+
+to setup-households
+  foreach gis:feature-list-of houses-dataset [ this-vector-feature ->
+    let center gis:centroid-of this-vector-feature
+    let loc gis:location-of center
+
+    if length loc >= 2 [
+      create-households 1 [
+        setxy item 0 loc item 1 loc
+        set driveway random 3
+        set label driveway
+        set shape "house"
+        set color blue
+        set size 0.1
+      ]
+    ]
+  ]
+end
+
+to setup-station
+  foreach gis:feature-list-of station-dataset [ this-vector-feature ->
+    let center gis:centroid-of this-vector-feature
+    let loc gis:location-of center
+
+    if length loc >= 2 [
+      ask patch item 0 loc item 1 loc [set pcolor yellow set station? true]
     ]
   ]
 end
