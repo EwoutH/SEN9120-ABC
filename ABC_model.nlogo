@@ -263,6 +263,24 @@ sum [child-wish] of households
 1
 11
 
+PLOT
+0
+406
+206
+585
+age distribution
+age
+residents
+0.0
+65.0
+0.0
+100.0
+false
+true
+"\nset-histogram-num-bars 9" ""
+PENS
+"residents" 1.0 1 -13840069 true "" "histogram [age] of residents"
+
 @#$#@#$#@
 ## WHAT IS IT?
 
