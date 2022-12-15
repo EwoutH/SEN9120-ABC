@@ -7,9 +7,9 @@ breed [residents resident]
 breed [cars car]
 
 patches-own [station?]
-spots-own [capacity private? household-nr]
+spots-own [capacity private? household-nr occupancy]
 households-own [driveway distance-spot distance-station child-wish]
-residents-own [household-nr age parent?]
+residents-own [household-nr age parent? owns-car? car-nr]
 cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use?]
 
 to setup
@@ -19,6 +19,7 @@ to setup
   setup-spots
   setup-station
   setup-households
+  ask spots [set label (capacity - occupancy)]
   reset-ticks
 end
 
@@ -43,7 +44,7 @@ to setup-spots
       create-spots 1 [
         setxy item 0 loc item 1 loc
         set capacity gis:property-value this-vector-feature "capacity"
-        if capacity != "" [set capacity read-from-string capacity]
+        ifelse capacity != "" [set capacity read-from-string capacity][die] ;; TODO: Fix spots without capacity
         set shape "square"
         set color red
         set size 0.1
@@ -96,7 +97,9 @@ to setup-residents
     set parent? true
     set age approximate-adults-age + random 4 - 3
     set color yellow
-    set-resident-properties]
+    set-resident-properties
+    setup-cars
+  ]
 
   ;; Determine their child wish and the approximate age of their childeren (between 20 and 30 years younger)
   set child-wish first rnd:weighted-one-of-list [[0 0.2] [1 0.35] [2 0.35] [3 0.1]] [[p] -> last p]
@@ -113,7 +116,6 @@ to setup-residents
           set age predicted-child-age
           set color orange
           set-resident-properties
-
           setup-cars
         ]
       ]
@@ -128,7 +130,35 @@ to set-resident-properties
 end
 
 to setup-cars
+  let gets-car? false ;; initialize variable
+  if age > 18 [
+    ifelse parent?
+      [set gets-car? random-float 1 < initial-car-chance-parent / 100]
+      [set gets-car? random-float 1 < initial-car-chance-child / 100]
+  ]
+  ifelse gets-car?
+    [set owns-car? true
+     hatch-cars 1 [set-car-properties]
+    ]
+    [set owns-car? false]
+end
 
+to set-car-properties
+  set owner myself
+  set shared? false
+  set lease? random-float 1 < 0.12  ;; CBS
+  ifelse lease?
+    [set age random 4
+     set mileage age * (9000 + random 18000)]
+    [set age random 10
+     set mileage age * (5000 + random 10000)]
+  ;; TODO: Think about (yearly) costs
+
+  set shape "car"
+  set size 0.5
+  let target-spot min-one-of spots with [not private? and occupancy < capacity] [distance myself]
+  move-to target-spot
+  ask target-spot [set occupancy occupancy + 1]
 end
 ;;[owner shared? age yearly-costs km-costs mileage lease? in-use?]
 to draw
@@ -153,10 +183,10 @@ to clear
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
-10
-1518
-679
+288
+11
+1596
+680
 -1
 -1
 20.0
@@ -296,6 +326,58 @@ false
 "set-histogram-num-bars 13\n" ""
 PENS
 "residents" 1.0 1 -13840069 true "" "histogram [age] of residents"
+
+SLIDER
+23
+632
+223
+665
+initial-car-chance-parent
+initial-car-chance-parent
+0
+100
+60.0
+1
+1
+%
+HORIZONTAL
+
+MONITOR
+39
+219
+110
+264
+cars
+count cars
+17
+1
+11
+
+SLIDER
+24
+596
+213
+629
+initial-car-chance-child
+initial-car-chance-child
+0
+100
+20.0
+1
+1
+%
+HORIZONTAL
+
+MONITOR
+202
+78
+284
+123
+available spots
+sum [capacity] of spots - sum [occupancy] of spots
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
