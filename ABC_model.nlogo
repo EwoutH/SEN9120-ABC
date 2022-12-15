@@ -17,6 +17,7 @@ to setup
   setup-spots
   setup-station
   setup-households
+  reset-ticks
 end
 
 to load
@@ -130,6 +131,12 @@ to draw
   gis:fill parking-dataset 0
   gis:set-drawing-color blue
   gis:fill houses-dataset 0
+end
+
+to go
+  ;;aging-residents
+  tick
+
 end
 
 to clear
@@ -274,10 +281,10 @@ residents
 0.0
 65.0
 0.0
-100.0
+300.0
 false
-true
-"\nset-histogram-num-bars 9" ""
+false
+"set-histogram-num-bars 13\n" ""
 PENS
 "residents" 1.0 1 -13840069 true "" "histogram [age] of residents"
 
