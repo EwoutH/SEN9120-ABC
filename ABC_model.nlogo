@@ -4,11 +4,13 @@ globals [parking-dataset residential-dataset grass-dataset houses-dataset statio
 breed [spots spot]
 breed [households household]
 breed [residents resident]
+breed [cars car]
 
 patches-own [station?]
-spots-own [capacity]
+spots-own [capacity private? household-nr]
 households-own [driveway distance-spot distance-station child-wish]
 residents-own [household-nr age parent?]
+cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use?]
 
 to setup
   clear-all
@@ -46,6 +48,7 @@ to setup-spots
         set color red
         set size 0.1
         set label capacity
+        set private? false
       ]
     ]
   ]
@@ -110,6 +113,8 @@ to setup-residents
           set age predicted-child-age
           set color orange
           set-resident-properties
+
+          setup-cars
         ]
       ]
     ]
@@ -122,6 +127,10 @@ to set-resident-properties
   set household-nr myself
 end
 
+to setup-cars
+
+end
+;;[owner shared? age yearly-costs km-costs mileage lease? in-use?]
 to draw
   gis:set-drawing-color grey
   gis:fill residential-dataset 0
@@ -282,7 +291,7 @@ residents
 65.0
 0.0
 300.0
-false
+true
 false
 "set-histogram-num-bars 13\n" ""
 PENS
