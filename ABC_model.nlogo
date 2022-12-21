@@ -228,9 +228,9 @@ NIL
 
 BUTTON
 27
-79
+166
 90
-112
+199
 NIL
 clear
 NIL
@@ -309,24 +309,6 @@ sum [child-wish] of households
 1
 11
 
-PLOT
-0
-406
-206
-585
-age distribution
-age
-residents
-0.0
-65.0
-0.0
-300.0
-true
-false
-"set-histogram-num-bars 13\n" ""
-PENS
-"residents" 1.0 1 -13840069 true "" "histogram [age] of residents"
-
 SLIDER
 23
 632
@@ -378,6 +360,78 @@ sum [capacity] of spots - sum [occupancy] of spots
 17
 1
 11
+
+PLOT
+1611
+154
+1863
+304
+car age
+age
+cars
+0.0
+10.0
+0.0
+150.0
+true
+true
+"set-plot-pen-interval 1" ""
+PENS
+"lease" 1.0 1 -5825686 true "" "histogram [age] of cars with [lease?]"
+"private" 1.0 1 -13791810 true "" "histogram [age] of cars with [not lease?]"
+"total" 1.0 1 -13840069 true "" "histogram [age] of cars"
+
+BUTTON
+68
+96
+123
+129
+NIL
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+8
+93
+63
+126
+NIL
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+PLOT
+1604
+10
+1862
+143
+resident age distribution
+age
+residents
+0.0
+65.0
+0.0
+300.0
+true
+false
+"" ""
+PENS
+"total" 5.0 1 -13840069 true "" "histogram [age] of residents"
 
 @#$#@#$#@
 ## WHAT IS IT?
