@@ -1,5 +1,5 @@
 extensions [gis rnd]
-globals [parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection]
+globals [parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection day month year days-in-year]
 
 breed [spots spot]
 breed [households household]
@@ -22,11 +22,39 @@ to setup
   setup-station
   setup-households
   ask spots [set label (capacity - occupancy)]
+  set days-in-year days-in-month * months-in-year
   reset-ticks
 end
 
-to go
-  ;;aging-residents
+to go ;; one year
+  repeat months-in-year [
+    repeat days-in-month [go-daily]
+    go-monthly
+  ]
+  go-yearly
+end
+
+to go-daily
+  ;; - Make one or multiple trips
+  ;; - Spread info to household
+  ;; - Chance of spreading info to connections
+  set day day + 1
+end
+
+to go-monthly
+  ;; - Update destinations (add some and remove some)
+  ;; - Pay train or car-sharing fees
+  ;; - Consider new subscriptions or canceling ones
+  ;; - Consider buying or selling a car
+  ;; - Add and remove connections (meet new people and lose contact with)
+  set month month + 1
+end
+
+to go-yearly
+  ;; - Age
+  ;; - Household: Chance of moving (initialize new household)
+  ;; - if child > 18 years: Chance of moveing out
+  set year year + 1
   tick
 end
 
@@ -181,11 +209,16 @@ to draw
   gis:fill houses-dataset 0
 end
 
-;; ##### MICRO-TICK (DAILY) FUNCTIONS ####
+;; ##### DAILY FUNCTIONS ####
 
 
 
-;; ##### MARCRO-TICK (YEARLY) FUNCTIONS ####
+;; ##### MONTHLY FUNCTIONS ####
+
+
+
+;; ##### YEARLY FUNCTIONS ####
+
 
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -213,13 +246,13 @@ GRAPHICS-WINDOW
 0
 1
 ticks
-30.0
+60.0
 
 BUTTON
-26
-26
-89
-59
+24
+103
+87
+136
 NIL
 setup
 NIL
@@ -233,10 +266,10 @@ NIL
 1
 
 BUTTON
-27
-166
-101
-199
+25
+243
+99
+276
 NIL
 clear-all
 NIL
@@ -250,10 +283,10 @@ NIL
 1
 
 MONITOR
-113
-23
-195
-68
+111
+100
+193
+145
 households
 count households
 17
@@ -261,10 +294,10 @@ count households
 11
 
 MONITOR
-116
-76
-197
-121
+114
+153
+195
+198
 public parking
 sum [capacity] of spots with [is-number? capacity]
 17
@@ -272,10 +305,10 @@ sum [capacity] of spots with [is-number? capacity]
 11
 
 MONITOR
-116
-127
-200
-172
+114
+204
+198
+249
 private parking
 sum [driveway] of households
 17
@@ -283,10 +316,10 @@ sum [driveway] of households
 11
 
 MONITOR
-116
-218
-173
-263
+114
+295
+171
+340
 parents
 count residents with [parent?]
 17
@@ -294,10 +327,10 @@ count residents with [parent?]
 11
 
 MONITOR
-115
-270
-176
-315
+113
+347
+174
+392
 childeren
 count residents with [not parent?]
 17
@@ -305,10 +338,10 @@ count residents with [not parent?]
 11
 
 MONITOR
-117
-354
-202
-399
+115
+431
+200
+476
 total child wish
 sum [child-wish] of households
 17
@@ -316,10 +349,10 @@ sum [child-wish] of households
 11
 
 SLIDER
-23
-632
-223
-665
+21
+709
+221
+742
 initial-car-chance-parent
 initial-car-chance-parent
 0
@@ -331,10 +364,10 @@ initial-car-chance-parent
 HORIZONTAL
 
 MONITOR
-39
-219
-110
-264
+37
+296
+108
+341
 cars
 count cars
 17
@@ -342,10 +375,10 @@ count cars
 11
 
 SLIDER
-24
-596
-213
-629
+22
+673
+211
+706
 initial-car-chance-child
 initial-car-chance-child
 0
@@ -357,10 +390,10 @@ initial-car-chance-child
 HORIZONTAL
 
 MONITOR
-202
-78
-284
-123
+200
+155
+282
+200
 available spots
 sum [capacity] of spots - sum [occupancy] of spots
 17
@@ -388,10 +421,10 @@ PENS
 "total" 1.0 1 -13840069 true "" "histogram [age] of cars"
 
 BUTTON
-68
-96
-123
-129
+66
+173
+121
+206
 NIL
 go
 T
@@ -405,10 +438,10 @@ NIL
 1
 
 BUTTON
-8
-93
-63
-126
+6
+170
+61
+203
 NIL
 go
 NIL
@@ -440,19 +473,78 @@ PENS
 "total" 5.0 1 -13840069 true "" "histogram [age] of residents"
 
 SLIDER
-35
-735
-207
-768
-days-in-year
-days-in-year
-5
-366
-30.0
+33
+812
+205
+845
+days-in-month
+days-in-month
+2
+31
+5.0
 1
 1
 NIL
 HORIZONTAL
+
+SLIDER
+33
+848
+205
+881
+months-in-year
+months-in-year
+2
+12
+3.0
+1
+1
+NIL
+HORIZONTAL
+
+MONITOR
+215
+813
+295
+858
+days in year
+days-in-year
+17
+1
+11
+
+MONITOR
+9
+10
+66
+55
+NIL
+day
+17
+1
+11
+
+MONITOR
+70
+10
+127
+55
+NIL
+month
+17
+1
+11
+
+MONITOR
+132
+10
+189
+55
+NIL
+year
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
