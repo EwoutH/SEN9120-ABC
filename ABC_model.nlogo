@@ -12,6 +12,8 @@ households-own [driveway distance-spot distance-station child-wish]
 residents-own [household-nr age parent? owns-car? car-nr]
 cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use?]
 
+;; ##### HIGH-LEVEL FUNCTIONS ####
+
 to setup
   clear-all
   load
@@ -22,6 +24,13 @@ to setup
   ask spots [set label (capacity - occupancy)]
   reset-ticks
 end
+
+to go
+  ;;aging-residents
+  tick
+end
+
+;; ##### SETUP FUNCTIONS ####
 
 to load
   set projection "WGS_84_Geographic"
@@ -172,15 +181,12 @@ to draw
   gis:fill houses-dataset 0
 end
 
-to go
-  ;;aging-residents
-  tick
+;; ##### MICRO-TICK (DAILY) FUNCTIONS ####
 
-end
 
-to clear
-  clear-all
-end
+
+;; ##### MARCRO-TICK (YEARLY) FUNCTIONS ####
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 288
@@ -229,10 +235,10 @@ NIL
 BUTTON
 27
 166
-90
+101
 199
 NIL
-clear
+clear-all
 NIL
 1
 T
@@ -432,6 +438,21 @@ false
 "" ""
 PENS
 "total" 5.0 1 -13840069 true "" "histogram [age] of residents"
+
+SLIDER
+35
+735
+207
+768
+days-in-year
+days-in-year
+5
+366
+30.0
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
