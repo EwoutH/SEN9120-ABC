@@ -51,7 +51,8 @@ to go-monthly
 end
 
 to go-yearly
-  ageing
+  ask residents [age-resident]
+  move-households
   ;; - Household: Chance of moving (initialize new household)
   ;; - if child > 18 years: Chance of moveing out
   set year year + 1
@@ -109,21 +110,24 @@ to setup-households
     let center gis:centroid-of this-vector-feature
     let loc gis:location-of center
 
-    if length loc >= 2 [
-      create-households 1 [
-        setxy item 0 loc item 1 loc
-        set driveway first rnd:weighted-one-of-list [[0 0.8] [1 0.15] [2 0.05]] [[p] -> last p]
-        set shape "house"
-        set color blue
-        set size 0.1
-        set distance-spot distance min-one-of spots [distance myself]
-        set distance-station distance one-of patches with [station?]
-
-        setup-residents
-      ]
+    if length loc >= 2 [setup-household loc]
     ]
-  ]
+
   ask n-of 10 households [type "Household ages: " ask residents with [household-nr = myself] [type age type ", "] type "child wish: " print child-wish]
+end
+
+to setup-household [loc]
+  create-households 1 [
+    setxy item 0 loc item 1 loc
+    set driveway first rnd:weighted-one-of-list [[0 0.8] [1 0.15] [2 0.05]] [[p] -> last p]
+    set shape "house"
+    set color blue
+    set size 0.1
+    set distance-spot distance min-one-of spots [distance myself]
+    set distance-station distance one-of patches with [station?]
+
+    setup-residents
+  ]
 end
 
 to setup-residents
@@ -219,11 +223,29 @@ end
 
 ;; ##### YEARLY FUNCTIONS ####
 
-to ageing
-  ask residents [set age age + 1]
+to age-resident
+  set age age + 1
 end
 
+to move-households
+  let new-household-locations []
+  ask households [
+    if random-float 1 < chance-of-household-moving / 100 [
+      let loc [list xcor ycor] of self
+      set new-household-locations lput loc new-household-locations
 
+      ask residents with [household-nr = myself][
+        ask cars with [owner = myself][
+          ask spots-here [set occupancy occupancy - 1] ;; TODO: Create function to (re)move cars
+          die
+        ]
+        die
+      ]
+      die
+    ]
+  ]
+  foreach new-household-locations setup-household
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 288
@@ -549,6 +571,21 @@ year
 17
 1
 11
+
+SLIDER
+21
+748
+250
+781
+chance-of-household-moving
+chance-of-household-moving
+0
+100
+100.0
+1
+1
+%
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
