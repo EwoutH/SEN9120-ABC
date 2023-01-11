@@ -51,7 +51,7 @@ to go-monthly
 end
 
 to go-yearly
-  ;; - Age
+  ageing
   ;; - Household: Chance of moving (initialize new household)
   ;; - if child > 18 years: Chance of moveing out
   set year year + 1
@@ -218,6 +218,10 @@ end
 
 
 ;; ##### YEARLY FUNCTIONS ####
+
+to ageing
+  ask residents [set age age + 1]
+end
 
 
 @#$#@#$#@
