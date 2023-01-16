@@ -53,8 +53,7 @@ end
 to go-yearly
   ask residents [age-resident]
   move-households
-  ;; - Household: Chance of moving (initialize new household)
-  ;; - if child > 18 years: Chance of moveing out
+  move-out-child
   set year year + 1
   tick
 end
@@ -245,6 +244,14 @@ to move-households
     ]
   ]
   foreach new-household-locations setup-household
+end
+
+to move-out-child
+  ask residents with [not parent? and age >= 18] [
+    if random-float 1 < chance-of-moving-out / 100 [
+      die
+    ]
+  ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -499,10 +506,10 @@ PENS
 "total" 5.0 1 -13840069 true "" "histogram [age] of residents"
 
 SLIDER
-33
-812
-205
-845
+25
+821
+197
+854
 days-in-month
 days-in-month
 2
@@ -514,10 +521,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-33
-848
-205
-881
+25
+857
+197
+890
 months-in-year
 months-in-year
 2
@@ -573,15 +580,30 @@ year
 11
 
 SLIDER
-21
-748
-250
-781
+18
+745
+247
+778
 chance-of-household-moving
 chance-of-household-moving
 0
-100
-100.0
+25
+10.0
+1
+1
+%
+HORIZONTAL
+
+SLIDER
+22
+780
+250
+813
+chance-of-moving-out
+chance-of-moving-out
+5
+25
+15.0
 1
 1
 %
