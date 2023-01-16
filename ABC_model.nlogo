@@ -9,7 +9,7 @@ breed [cars car]
 patches-own [station?]
 spots-own [capacity private? household-nr occupancy]
 households-own [driveway distance-spot distance-station child-wish]
-residents-own [household-nr age parent? owns-car? car-nr]
+residents-own [household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts]
 cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use?]
 
 ;; ##### HIGH-LEVEL FUNCTIONS ####
@@ -21,6 +21,7 @@ to setup
   setup-spots
   setup-station
   setup-households
+  setup-contacts
   ask spots [set label (capacity - occupancy)]
   set days-in-year days-in-month * months-in-year
   reset-ticks
@@ -201,6 +202,7 @@ to set-car-properties
   ask target-spot [set occupancy occupancy + 1]
 end
 ;;[owner shared? age yearly-costs km-costs mileage lease? in-use?]
+
 to draw
   gis:set-drawing-color grey
   gis:fill residential-dataset 0
@@ -210,6 +212,35 @@ to draw
   gis:fill parking-dataset 0
   gis:set-drawing-color blue
   gis:fill houses-dataset 0
+end
+
+to setup-contacts
+  print "Setting up contacts:"
+  ;; Setup neighbours
+  ask residents [
+    let n-neighbours random-poisson average-neighbour-contacts  ;; Note that poisson might not be the ideal distribution
+    set neighbours-contacts up-to-n-of n-neighbours residents in-radius 3
+    ;; TODO: Maybe consider age
+  ]
+
+  ;; Setup contacts for parents with childeren of same age
+  ask residents [set parent-contacts nobody]
+  ask residents with [parent?] [
+    ;; Get ages of own childeren
+    let childeren residents with [household-nr = [household-nr] of myself and not parent? and age <= 12]
+    let ages sort [age] of childeren
+
+    ask childeren [
+      let peers residents with [abs(age - [age] of myself) <= 1] ;; Max one year age difference
+      let peer-parents residents with [parent? and member? household-nr [household-nr] of peers]
+      let n-peers random-poisson average-parent-contacts-per-child
+      if n-peers >= 1 [
+        let new-parents-contacts up-to-n-of n-peers peer-parents
+        set parent-contacts (turtle-set parent-contacts new-parents-contacts)
+      ]
+    ]
+  ]
+  ask n-of 10 residents [type "Neighbours: " type count neighbours-contacts type ", parent contacts: " type parent-contacts type ", total: " print count (turtle-set neighbours-contacts parent-contacts)]
 end
 
 ;; ##### DAILY FUNCTIONS ####
@@ -506,10 +537,10 @@ PENS
 "total" 5.0 1 -13840069 true "" "histogram [age] of residents"
 
 SLIDER
-25
-821
-197
-854
+24
+852
+196
+885
 days-in-month
 days-in-month
 2
@@ -521,10 +552,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-25
-857
-197
-890
+24
+888
+196
+921
 months-in-year
 months-in-year
 2
@@ -536,10 +567,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-215
-813
-295
-858
+206
+853
+286
+898
 days in year
 days-in-year
 17
@@ -580,10 +611,10 @@ year
 11
 
 SLIDER
-18
-745
-247
-778
+21
+760
+250
+793
 chance-of-household-moving
 chance-of-household-moving
 0
@@ -595,10 +626,135 @@ chance-of-household-moving
 HORIZONTAL
 
 SLIDER
+439
+763
+607
+796
+mean-distance-work
+mean-distance-work
+0
+100
+22.0
+1
+1
+km
+HORIZONTAL
+
+SLIDER
+442
+805
+608
+838
+mean-distance-other
+mean-distance-other
+0
+100
+11.0
+1
+1
+km
+HORIZONTAL
+
+SLIDER
+613
+763
+788
+796
+variance-distance-work
+variance-distance-work
+0
+20
+5.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+881
+772
+1059
+805
+mean-weekly-work-trips
+mean-weekly-work-trips
+2
+6
+4.0
+0.1
+1
+NIL
+HORIZONTAL
+
+TEXTBOX
+443
+741
+620
+769
+Gamma distribution parameters
+11
+0.0
+1
+
+TEXTBOX
+880
+742
+1030
+760
+Poisson distribution parameters
+11
+0.0
+1
+
+SLIDER
+887
+815
+1075
+848
+mean-weekly-other-trips
+mean-weekly-other-trips
+0
+10
+6.0
+0.1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+23
+574
+220
+607
+average-neighbour-contacts
+average-neighbour-contacts
+0
+25
+5.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+24
+615
+253
+648
+average-parent-contacts-per-child
+average-parent-contacts-per-child
+0
+10
+3.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
 22
-780
-250
-813
+795
+203
+828
 chance-of-moving-out
 chance-of-moving-out
 5
