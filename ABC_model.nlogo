@@ -9,7 +9,7 @@ breed [cars car]
 patches-own [station?]
 spots-own [capacity private? household-nr occupancy]
 households-own [driveway distance-spot distance-station child-wish]
-residents-own [household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts destinations]
+residents-own [household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts work-destinations other-destinations]
 cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use?]
 
 ;; ##### HIGH-LEVEL FUNCTIONS ####
@@ -22,6 +22,7 @@ to setup
   setup-station
   setup-households
   setup-contacts
+  setup-destinations
   ask spots [set label (capacity - occupancy)]
   set days-in-year days-in-month * months-in-year
   reset-ticks
@@ -244,10 +245,13 @@ to setup-contacts
 end
 
 to setup-destinations
-
+  ask residents [
+    set work-destinations n-values 1 [create-destination true]
+    set other-destinations n-values 3 [create-destination false]
+  ]
 end
 
-to create-destionation [work?]
+to-report create-destination [work?]
   let trip-distance 0
   let trip-length 0
   ifelse work? [
@@ -265,6 +269,8 @@ to create-destionation [work?]
   table:put destination-table "car-costs" trip-distance * car-costs-per-km
   table:put destination-table "public-transport-costs" trip-distance * public-transport-costs-per-km
   table:put destination-table "shared-car-transport-costs" trip-distance * shared-car-costs-per-km + trip-length * shared-car-costs-per-hour
+
+  report destination-table
 end
 
 ;; ##### DAILY FUNCTIONS ####
