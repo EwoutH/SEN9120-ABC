@@ -688,9 +688,9 @@ HORIZONTAL
 TEXTBOX
 395
 695
-572
+622
 723
-Gamma distribution parameters
+Distances: Gamma distribution parameters
 11
 0.0
 1
@@ -698,9 +698,9 @@ Gamma distribution parameters
 TEXTBOX
 832
 696
-982
-714
-Poisson distribution parameters
+1085
+724
+Frequencies: Poisson distribution parameters
 11
 0.0
 1
@@ -781,10 +781,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-391
-820
-583
-853
+390
+842
+582
+875
 shared-car-costs-per-km
 shared-car-costs-per-km
 0.05
@@ -796,10 +796,10 @@ shared-car-costs-per-km
 HORIZONTAL
 
 SLIDER
-587
-821
-774
-854
+586
+843
+773
+876
 shared-car-cost-per-hour
 shared-car-cost-per-hour
 1
@@ -811,10 +811,10 @@ shared-car-cost-per-hour
 HORIZONTAL
 
 SLIDER
-838
-826
-1010
-859
+833
+837
+1005
+870
 work-trip-lenght
 work-trip-lenght
 1
@@ -826,10 +826,10 @@ hour
 HORIZONTAL
 
 SLIDER
-839
-863
-1012
-896
+834
+874
+1007
+907
 other-trip-lenght
 other-trip-lenght
 0.5
@@ -841,10 +841,10 @@ hour
 HORIZONTAL
 
 SLIDER
-389
-859
-582
-892
+388
+881
+581
+914
 car-costs-per-km
 car-costs-per-km
 0
@@ -856,10 +856,10 @@ car-costs-per-km
 HORIZONTAL
 
 SLIDER
-587
-860
-773
-893
+586
+882
+772
+915
 car-monthly-costs
 car-monthly-costs
 0
@@ -871,10 +871,10 @@ car-monthly-costs
 HORIZONTAL
 
 SLIDER
-390
-992
-603
-1025
+389
+944
+583
+977
 public-transport-fixed-costs
 public-transport-fixed-costs
 0
@@ -886,10 +886,10 @@ public-transport-fixed-costs
 HORIZONTAL
 
 SLIDER
-612
-992
-839
-1025
+590
+944
+792
+977
 public-transport-costs-per-km
 public-transport-costs-per-km
 0
@@ -898,6 +898,81 @@ public-transport-costs-per-km
 0.01
 1
 €
+HORIZONTAL
+
+TEXTBOX
+397
+820
+547
+838
+Costs
+11
+0.0
+1
+
+TEXTBOX
+837
+819
+987
+837
+Trip duration
+11
+0.0
+1
+
+TEXTBOX
+396
+1018
+546
+1036
+Travel speed
+11
+0.0
+1
+
+SLIDER
+396
+1039
+568
+1072
+mean-car-speed
+mean-car-speed
+0
+100
+46.3
+1
+1
+km/h
+HORIZONTAL
+
+SLIDER
+805
+1037
+986
+1070
+mean-bike-speed
+mean-bike-speed
+0
+45
+11.8
+0.1
+1
+km/h
+HORIZONTAL
+
+SLIDER
+577
+1038
+797
+1071
+mean-public-transport-speed
+mean-public-transport-speed
+0
+100
+34.8
+0.1
+1
+km/h
 HORIZONTAL
 
 @#$#@#$#@
