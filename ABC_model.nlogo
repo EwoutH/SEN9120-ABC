@@ -1,4 +1,4 @@
-extensions [gis rnd]
+extensions [gis rnd table]
 globals [parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection day month year days-in-year]
 
 breed [spots spot]
@@ -9,7 +9,7 @@ breed [cars car]
 patches-own [station?]
 spots-own [capacity private? household-nr occupancy]
 households-own [driveway distance-spot distance-station child-wish]
-residents-own [household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts]
+residents-own [household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts destinations]
 cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use?]
 
 ;; ##### HIGH-LEVEL FUNCTIONS ####
@@ -243,12 +243,39 @@ to setup-contacts
   ask n-of 10 residents [type "Neighbours: " type count neighbours-contacts type ", parent contacts: " type parent-contacts type ", total: " print count (turtle-set neighbours-contacts parent-contacts)]
 end
 
+to setup-destinations
+
+end
+
+to create-destionation [work?]
+  let trip-distance 0
+  let trip-length 0
+  ifelse work? [
+    set trip-distance mean-distance-work   ; TODO: draw from gamma distribution
+    set trip-length work-trip-length
+  ] [
+    set trip-distance mean-distance-other
+    set trip-length other-trip-length
+  ]
+
+  let destination-table table:make
+  table:put destination-table "car-time" trip-distance / mean-car-speed * 60
+  table:put destination-table "bike-time" trip-distance / mean-bike-speed * 60
+  table:put destination-table "public-transport-time" trip-distance / mean-public-transport-speed * 60
+  table:put destination-table "car-costs" trip-distance * car-costs-per-km
+  table:put destination-table "public-transport-costs" trip-distance * public-transport-costs-per-km
+  table:put destination-table "shared-car-transport-costs" trip-distance * shared-car-costs-per-km + trip-length * shared-car-costs-per-hour
+end
+
 ;; ##### DAILY FUNCTIONS ####
 
 
 
 ;; ##### MONTHLY FUNCTIONS ####
 
+to update-destinations
+
+end
 
 
 ;; ##### YEARLY FUNCTIONS ####
@@ -288,11 +315,11 @@ end
 GRAPHICS-WINDOW
 288
 11
-1596
-680
+1571
+667
 -1
 -1
-20.0
+19.62
 1
 12
 1
@@ -744,7 +771,7 @@ average-parent-contacts-per-child
 average-parent-contacts-per-child
 0
 10
-3.0
+10.0
 1
 1
 NIL
@@ -798,10 +825,10 @@ HORIZONTAL
 SLIDER
 586
 843
-773
+806
 876
-shared-car-cost-per-hour
-shared-car-cost-per-hour
+shared-car-costs-per-hour
+shared-car-costs-per-hour
 1
 10
 3.25
@@ -815,8 +842,8 @@ SLIDER
 837
 1005
 870
-work-trip-lenght
-work-trip-lenght
+work-trip-length
+work-trip-length
 1
 12
 8.0
@@ -830,8 +857,8 @@ SLIDER
 874
 1007
 907
-other-trip-lenght
-other-trip-lenght
+other-trip-length
+other-trip-length
 0.5
 6
 2.5
