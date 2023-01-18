@@ -251,10 +251,10 @@ to create-destionation [work?]
   let trip-distance 0
   let trip-length 0
   ifelse work? [
-    set trip-distance mean-distance-work   ; TODO: draw from gamma distribution
+    set trip-distance random-gamma (mean-distance-work * mean-distance-work / variance-distance-work) (1 / (variance-distance-work / mean-distance-work))
     set trip-length work-trip-length
   ] [
-    set trip-distance mean-distance-other
+    set trip-distance random-gamma (mean-distance-other * mean-distance-other / variance-distance-other) (1 / (variance-distance-other / mean-distance-other))
     set trip-length other-trip-length
   ]
 
@@ -685,13 +685,13 @@ HORIZONTAL
 SLIDER
 565
 717
-740
+758
 750
 variance-distance-work
 variance-distance-work
 0
-20
-5.0
+400
+220.0
 1
 1
 NIL
@@ -795,13 +795,13 @@ HORIZONTAL
 SLIDER
 570
 758
-742
+754
 791
 variance-distance-other
 variance-distance-other
 0
-20
-5.0
+200
+110.0
 1
 1
 NIL
