@@ -108,11 +108,15 @@ to set-resident-properties
   set heading random 360
   set household-nr myself
   
-  set initial-modality-perference table:make
-  table:put initial-modality-perference "car" random-float 1
-  table:put initial-modality-perference "bike" random-float 1
-  table:put initial-modality-perference "public-transport" random-float 1
-  table:put initial-modality-perference "shared-car" random-float 1
+  set initial-modality-preference table:make
+  table:put initial-modality-preference "car" random-float 1
+  table:put initial-modality-preference "bike" random-float 1
+  table:put initial-modality-preference "public-transport" random-float 1
+  table:put initial-modality-preference "shared-car" random-float 1
+  
+  set adoption-speed random-normal 0.5 0.15
+  if adoption-speed <= 0 [set adoption-speed 0.01]
+  if adoption-speed > 1 [set adoption-speed 1]
 end
 
 to setup-cars
