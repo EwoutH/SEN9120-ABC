@@ -8,6 +8,12 @@ to update-destinations
 
 end
 
+to update-preferences [contact-preferences]
+  let alpha social-adoption-multiplier * adoption-speed
+  foreach (table:keys modality-preference) [
+    [key] -> table:put modality-preference key (table:get modality-preference key * (1 - alpha) + table:get contact-preferences key * alpha)
+  ]
+end
 
 ;; ##### YEARLY FUNCTIONS ####
 

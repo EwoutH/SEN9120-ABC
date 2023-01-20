@@ -508,7 +508,7 @@ average-neighbour-contacts
 average-neighbour-contacts
 0
 25
-5.0
+2.0
 1
 1
 NIL
@@ -752,6 +752,21 @@ mean-public-transport-speed
 0.1
 1
 km/h
+HORIZONTAL
+
+SLIDER
+1171
+716
+1365
+749
+social-adoption-multiplier
+social-adoption-multiplier
+0
+1
+0.1
+0.01
+1
+NIL
 HORIZONTAL
 
 @#$#@#$#@
