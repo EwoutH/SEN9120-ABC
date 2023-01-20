@@ -1,0 +1,44 @@
+;; ##### DAILY FUNCTIONS ####
+
+
+
+;; ##### MONTHLY FUNCTIONS ####
+
+to update-destinations
+
+end
+
+
+;; ##### YEARLY FUNCTIONS ####
+
+to age-resident
+  set age age + 1
+end
+
+to move-households
+  let new-household-locations []
+  ask households [
+    if random-float 1 < chance-of-household-moving / 100 [
+      let loc [list xcor ycor] of self
+      set new-household-locations lput loc new-household-locations
+
+      ask residents with [household-nr = myself][
+        ask cars with [owner = myself][
+          ask spots-here [set occupancy occupancy - 1] ;; TODO: Create function to (re)move cars
+          die
+        ]
+        die
+      ]
+      die
+    ]
+  ]
+  foreach new-household-locations setup-household
+end
+
+to move-out-child
+  ask residents with [not parent? and age >= 18] [
+    if random-float 1 < chance-of-moving-out / 100 [
+      die
+    ]
+  ]
+end
