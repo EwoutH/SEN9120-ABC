@@ -10,7 +10,10 @@ breed [cars car]
 patches-own [station?]
 spots-own [capacity private? household-nr occupancy]
 households-own [driveway distance-spot distance-station child-wish]
-residents-own [household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts work-destinations other-destinations]
+residents-own [
+  household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts work-destinations other-destinations
+  adoption-speed modality-preference initial-modality-preference
+]
 cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use?]
 
 ;; ##### HIGH-LEVEL FUNCTIONS ####

@@ -107,6 +107,12 @@ to set-resident-properties
   set size 0.3
   set heading random 360
   set household-nr myself
+  
+  set initial-modality-perference table:make
+  table:put initial-modality-perference "car" random-float 1
+  table:put initial-modality-perference "bike" random-float 1
+  table:put initial-modality-perference "public-transport" random-float 1
+  table:put initial-modality-perference "shared-car" random-float 1
 end
 
 to setup-cars
