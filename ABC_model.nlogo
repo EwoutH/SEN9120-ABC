@@ -9,10 +9,11 @@ breed [cars car]
 
 patches-own [station?]
 spots-own [capacity private? household-nr occupancy]
-households-own [driveway distance-spot distance-station child-wish]
+households-own [driveway distance-spot distance-station child-wish monthly-costs-lists]
 residents-own [
-  household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts work-destinations other-destinations
+  household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts work-destinations other-destinations monthly-costs-lists months-costs work-days other-days
   adoption-speed modality-preference initial-modality-preference
+  away?
 ]
 cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use?]
 
@@ -42,8 +43,14 @@ end
 
 to go-daily
   ;; - Make one or multiple trips
+  ask residents [if random-float 1 < work-days / 7 [start-trip true]]
+  ask residents with [away?] [end-trip]
+  ask residents [if random-float 1 < other-days / 7 [start-trip false]]
+  ask residents with [away?] [end-trip]
+
   ;; - Spread info to household
   ;; - Chance of spreading info to connections
+
   set day day + 1
 end
 
@@ -324,7 +331,7 @@ days-in-month
 days-in-month
 2
 31
-5.0
+30.0
 1
 1
 NIL
@@ -339,7 +346,7 @@ months-in-year
 months-in-year
 2
 12
-3.0
+12.0
 1
 1
 NIL
@@ -452,13 +459,13 @@ HORIZONTAL
 SLIDER
 831
 716
-1009
+1016
 749
 mean-weekly-work-trips
 mean-weekly-work-trips
 2
 6
-4.0
+4.3
 0.1
 1
 NIL
@@ -493,7 +500,7 @@ mean-weekly-other-trips
 mean-weekly-other-trips
 0
 10
-6.0
+6.8
 0.1
 1
 NIL
@@ -768,6 +775,38 @@ social-adoption-multiplier
 1
 NIL
 HORIZONTAL
+
+MONITOR
+1034
+709
+1104
+754
+work trips
+mean [work-days] of residents
+2
+1
+11
+
+MONITOR
+1033
+758
+1105
+803
+other trips
+mean [other-days] of residents
+2
+1
+11
+
+TEXTBOX
+28
+926
+264
+954
+TODO: Make time compression working.
+11
+0.0
+1
 
 @#$#@#$#@
 ## WHAT IS IT?

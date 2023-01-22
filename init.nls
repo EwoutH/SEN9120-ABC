@@ -44,6 +44,8 @@ to setup-station
   ]
 end
 
+;; TODO: Also create virtual spots for residents to travel to when traveling with shared car, etc.
+
 to setup-households
   foreach gis:feature-list-of houses-dataset [ this-vector-feature ->
     let center gis:centroid-of this-vector-feature
@@ -107,6 +109,7 @@ to set-resident-properties
   set size 0.3
   set heading random 360
   set household-nr myself
+  set away? false
   
   set modality-preference table:make
   table:put modality-preference "car" random-float 1
@@ -117,6 +120,13 @@ to set-resident-properties
   set adoption-speed random-normal 0.5 0.15
   if adoption-speed <= 0 [set adoption-speed 0.01]
   if adoption-speed > 1 [set adoption-speed 1]
+  
+  ;; TODO: Setup utility-preference trade-off similarly to adoption-speed
+  
+  set work-days random-poisson mean-weekly-work-trips
+  if work-days > 6 [set work-days 6]  ;; Note that this lowers the actual average a bit
+  set other-days random-poisson mean-weekly-other-trips
+  if other-days > 7 [set other-days 7]
 end
 
 to setup-cars

@@ -1,6 +1,27 @@
 ;; ##### DAILY FUNCTIONS ####
+to start-trip [work?]
+  let destination 0
+  ifelse work?
+    [set destination one-of work-destinations]
+    [set destination one-of other-destinations]
 
+  let modality one-of ["car" "bike" "public-transport" "shared-car"]
+  ;; TODO:
+  ;; - Choose modality based on a concious choice or previous choice
+  ;; - Move turtle (and car) to certain point
 
+  set away? true
+end
+
+to end-trip
+  ;; TODO:
+  ;; - Add costs to months-costs counter
+  ;; - Update preference somehow
+  ;; - Save this modality as last used and increase a counter wiht +1 how many times this modality was used
+  ;; - Move turtle (and car) back
+
+  set away? false
+end
 
 ;; ##### MONTHLY FUNCTIONS ####
 
