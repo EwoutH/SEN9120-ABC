@@ -665,7 +665,7 @@ public-transport-fixed-costs
 public-transport-fixed-costs
 0
 3
-0.89
+1.08
 0.01
 1
 €
@@ -680,7 +680,7 @@ public-transport-costs-per-km
 public-transport-costs-per-km
 0
 0.50
-0.17
+0.2
 0.01
 1
 €
