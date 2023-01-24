@@ -23,6 +23,24 @@ to start-trip [work?]
   let new-choice? not member? last-modality available-modalities or random-float 1 < (1 / max list 1 table:get destination "consecutive-count")
   ifelse new-choice? [
     
+    ;; Create a list with the effective costs for each available modality
+    let eff-costs []
+    foreach available-modalities [
+      [key] -> set eff-costs lput (table:get destination (word "eff-" key "-costs")) eff-costs
+    ]
+
+    ;; Update the car and shared-car costs with the walking distance
+    if member? "car" available-modalities [
+      let walking-costs distance car-nr * patch-distance / walking-speed * value-of-time
+      set eff-costs replace-item 2 eff-costs (item 2 eff-costs + walking-costs)
+    ]
+    if member? "shared-car" available-modalities [
+      let walking-costs distance min-one-of cars with [shared? and not in-use?] [distance myself] * patch-distance / walking-speed * value-of-time
+      ifelse member? "car" available-modalities   ;; The shared car is the fourth (3) item if a car is also available, otherwise the third (2) item
+       [set eff-costs replace-item 3 eff-costs (item 3 eff-costs + walking-costs)]
+       [set eff-costs replace-item 2 eff-costs (item 2 eff-costs + walking-costs)]
+    ]
+
     ;; - Calculate utility for each modality based on where cars are parked, and normalize to 0 to 1 range (1 is zero costs, 0 is the maximum costs)
     ;; - Calculate preference for each modality based on preference, utility and preference-utility-tradeoff:
     ;;         preference = utility * preference-utility-tradeoff + preference * (1 - preference-utility-tradeoff)

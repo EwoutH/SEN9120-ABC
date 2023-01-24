@@ -1,6 +1,6 @@
 __includes ["init.nls" "tick.nls"]
 extensions [gis rnd table]
-globals [parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection day month year days-in-year patch-distance]
+globals [parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection day month year days-in-year patch-distance walking-speed]
 
 breed [spots spot]
 breed [households household]
@@ -24,7 +24,7 @@ to setup
   load
   draw
   set patch-distance 0.018312102  ;; The distance one patch is in km
-
+  set walking-speed 5
   setup-spots
   setup-station
   setup-households
@@ -45,9 +45,9 @@ end
 
 to go-daily
   ;; - Make one or multiple trips
-  ask residents [if random-float 1 < work-days / 7 [start-trip true]]
+  ask residents with [age >= 18] [if random-float 1 < work-days / 7 [start-trip true]]
   ask residents with [away?] [end-trip]
-  ask residents [if random-float 1 < other-days / 7 [start-trip false]]
+  ask residents with [age >= 18] [if random-float 1 < other-days / 7 [start-trip false]]
   ask residents with [away?] [end-trip]
 
   ;; - Spread info to household

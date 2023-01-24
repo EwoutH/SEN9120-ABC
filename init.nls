@@ -142,7 +142,8 @@ to setup-cars
   ]
   ifelse gets-car?
     [set owns-car? true
-     hatch-cars 1 [set-car-properties]
+      hatch-cars 1 [set-car-properties]
+      set car-nr one-of cars with [owner = myself]
     ]
     [set owns-car? false]
 end
@@ -160,6 +161,7 @@ to set-car-properties
 
   set shape "car"
   set size 0.5
+  set shared? false
   let target-spot min-one-of spots with [not private? and occupancy < capacity] [distance myself]
   move-to target-spot
   ask target-spot [set occupancy occupancy + 1]
