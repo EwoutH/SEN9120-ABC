@@ -12,7 +12,7 @@ spots-own [capacity private? household-nr occupancy]
 households-own [driveway distance-spot distance-station child-wish monthly-costs-lists]
 residents-own [
   household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts work-destinations other-destinations monthly-costs-lists months-costs work-days other-days
-  adoption-speed modality-preference initial-modality-preference
+  adoption-speed modality-preference initial-modality-preference utility-weight value-of-time
   away?
 ]
 cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use?]
@@ -26,7 +26,7 @@ to setup
   setup-spots
   setup-station
   setup-households
-  setup-contacts
+  ;; setup-contacts
   setup-destinations
   ask spots [set label (capacity - occupancy)]
   set days-in-year days-in-month * months-in-year
@@ -804,6 +804,46 @@ TEXTBOX
 264
 954
 TODO: Make time compression working.
+11
+0.0
+1
+
+SLIDER
+1172
+833
+1362
+866
+mean-value-of-time
+mean-value-of-time
+0
+20
+8.75
+0.25
+1
+€/hour
+HORIZONTAL
+
+SLIDER
+1173
+872
+1365
+905
+variance-value-of-time
+variance-value-of-time
+0
+60
+12.0
+0.5
+1
+NIL
+HORIZONTAL
+
+TEXTBOX
+1174
+807
+1417
+835
+Value of (travel) time (Gamma distributed)
 11
 0.0
 1

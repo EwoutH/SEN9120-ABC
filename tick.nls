@@ -4,14 +4,26 @@ to start-trip [work?]
   ifelse work?
     [set destination one-of work-destinations]
     [set destination one-of other-destinations]
+  
+  ;; TODO:
+  ;; - Check if own car is available
+  ;; - Check if car or household member is available
+  ;; - Check if shared-car is available
+  
 
-  let modality one-of ["car" "bike" "public-transport" "shared-car"]
+  let modalities ["car" "bike" "public-transport" "shared-car"]
+ 
+    
+  let costs table:make
+  table:put costs "car" table:get destination-table "car-costs"
+  
   ;; TODO:
   ;; - Choose modality based on a concious choice or previous choice
   ;; - Move turtle (and car) to certain point
 
   set away? true
 end
+
 
 to end-trip
   ;; TODO:
