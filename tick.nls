@@ -7,17 +7,40 @@ to start-trip [work?]
   
   ;; TODO:
   ;; - Check if own car is available
-  ;; - Check if car or household member is available
+  let available-modalities ["bike" "public-transport"]
+  if owns-car? [
+    set available-modalities lput "car" available-modalities  
+    ;; Change to household cars
+  ]
   ;; - Check if shared-car is available
-
+  if any? cars with [shared? and not in-use?] [
+    set available-modalities lput "shared-car" available-modalities 
+  ]  
+  
   ;; - Choose modality based on a concious choice or previous choice, if previous choice is available
+  let last-modality table:get destination "last-modality"
+  
+  let new-choice? not member? last-modality available-modalities or random-float 1 < (1 / max list 1 table:get destination "consecutive-count")
+  ifelse new-choice? [
+    
+    ;; - Calculate utility for each modality based on where cars are parked, and normalize to 0 to 1 range (1 is zero costs, 0 is the maximum costs)
+    ;; - Calculate preference for each modality based on preference, utility and preference-utility-tradeoff:
+    ;;         preference = utility * preference-utility-tradeoff + preference * (1 - preference-utility-tradeoff)
+    ;; Calculate chance of concious choice
+  ]
+  [
+    let modality last-modality 
+    ;; Choose new modality because the initial modality is not available
+  ]
+   
+   
   
   ;; - Calculate utility for each modality based on where cars are parked, and normalize to 0 to 1 range (1 is zero costs, 0 is the maximum costs)
   ;; - Calculate preference for each modality based on preference, utility and preference-utility-tradeoff:
   ;;         preference = utility * preference-utility-tradeoff + preference * (1 - preference-utility-tradeoff)
   ;; - Use that modality to make trip (move turtle (and car) to certain point)
 
-  let modality one-of ["car" "bike" "public-transport" "shared-car"]
+  let modality one-of available-modalities 
   
   ifelse modality = table:get destination "last-modality"
     [table:put destination "consecutive-count" table:get destination "consecutive-count" + 1]
