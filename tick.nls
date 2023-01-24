@@ -11,11 +11,13 @@ to start-trip [work?]
   ;; - Check if shared-car is available
   
 
-  let modalities ["car" "bike" "public-transport" "shared-car"]
- 
-    
-  let costs table:make
-  table:put costs "car" table:get destination-table "car-costs"
+  let modality one-of ["car" "bike" "public-transport" "shared-car"]
+  
+  ifelse modality = table:get destination "last-modality"
+    [table:put destination "consecutive-count" table:get destination "consecutive-count" + 1]
+    [table:put destination "last-modality" modality
+     table:put destination "consecutive-count" 1]
+  
   
   ;; TODO:
   ;; - Choose modality based on a concious choice or previous choice

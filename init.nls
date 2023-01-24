@@ -64,8 +64,8 @@ to setup-household [loc]
     set shape "house"
     set color blue
     set size 0.1
-    set distance-spot distance min-one-of spots [distance myself]
-    set distance-station distance one-of patches with [station?]
+    set distance-spot distance min-one-of spots [distance myself] * patch-distance
+    set distance-station distance one-of patches with [station?] * patch-distance
 
     setup-residents
   ]
@@ -225,12 +225,21 @@ to-report create-destination [work?]
   ]
 
   let destination-table table:make
-  table:put destination-table "car-time" trip-distance / mean-car-speed * 60
-  table:put destination-table "bike-time" trip-distance / mean-bike-speed * 60
-  table:put destination-table "public-transport-time" trip-distance / mean-public-transport-speed * 60
+  table:put destination-table "distance" trip-distance
+  table:put destination-table "car-time" trip-distance / mean-car-speed
+  table:put destination-table "bike-time" trip-distance / mean-bike-speed
+  table:put destination-table "public-transport-time" trip-distance / mean-public-transport-speed
   table:put destination-table "car-costs" trip-distance * car-costs-per-km
   table:put destination-table "public-transport-costs" trip-distance * public-transport-costs-per-km
-  table:put destination-table "shared-car-transport-costs" trip-distance * shared-car-costs-per-km + trip-length * shared-car-costs-per-hour
+  table:put destination-table "shared-car-costs" trip-distance * shared-car-costs-per-km + trip-length * shared-car-costs-per-hour
+
+  table:put destination-table "eff-car-costs" table:get destination-table "car-costs" + table:get destination-table "car-time" * value-of-time
+  table:put destination-table "eff-bike-costs" table:get destination-table "bike-time" * value-of-time
+  table:put destination-table "eff-public-transport-costs" table:get destination-table "public-transport-costs" + (table:get destination-table "public-transport-time" + 2 * [distance-station] of household-nr / mean-bike-speed) * value-of-time
+  table:put destination-table "eff-shared-car-costs" table:get destination-table "shared-car-costs" + table:get destination-table "car-time" * value-of-time
+  
+  table:put destination-table "last-modality" ""
+  table:put destination-table "consecutive-count" 0
 
   report destination-table
 end

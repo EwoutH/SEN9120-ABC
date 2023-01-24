@@ -1,6 +1,6 @@
 __includes ["init.nls" "tick.nls"]
 extensions [gis rnd table]
-globals [parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection day month year days-in-year]
+globals [parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection day month year days-in-year patch-distance]
 
 breed [spots spot]
 breed [households household]
@@ -23,6 +23,7 @@ to setup
   clear-all
   load
   draw
+  set patch-distance 0.018312102  ;; The distance one patch is in km
   setup-spots
   setup-station
   setup-households
@@ -420,7 +421,7 @@ mean-distance-work
 mean-distance-work
 0
 100
-22.0
+44.0
 1
 1
 km
@@ -435,7 +436,7 @@ mean-distance-other
 mean-distance-other
 0
 100
-11.0
+22.0
 1
 1
 km
@@ -449,8 +450,8 @@ SLIDER
 variance-distance-work
 variance-distance-work
 0
-400
-220.0
+800
+440.0
 1
 1
 NIL
@@ -559,8 +560,8 @@ SLIDER
 variance-distance-other
 variance-distance-other
 0
-200
-110.0
+400
+220.0
 1
 1
 NIL
