@@ -9,7 +9,13 @@ to start-trip [work?]
   ;; - Check if own car is available
   ;; - Check if car or household member is available
   ;; - Check if shared-car is available
+
+  ;; - Choose modality based on a concious choice or previous choice, if previous choice is available
   
+  ;; - Calculate utility for each modality based on where cars are parked, and normalize to 0 to 1 range (1 is zero costs, 0 is the maximum costs)
+  ;; - Calculate preference for each modality based on preference, utility and preference-utility-tradeoff:
+  ;;         preference = utility * preference-utility-tradeoff + preference * (1 - preference-utility-tradeoff)
+  ;; - Use that modality to make trip (move turtle (and car) to certain point)
 
   let modality one-of ["car" "bike" "public-transport" "shared-car"]
   
@@ -17,11 +23,6 @@ to start-trip [work?]
     [table:put destination "consecutive-count" table:get destination "consecutive-count" + 1]
     [table:put destination "last-modality" modality
      table:put destination "consecutive-count" 1]
-  
-  
-  ;; TODO:
-  ;; - Choose modality based on a concious choice or previous choice
-  ;; - Move turtle (and car) to certain point
 
   set away? true
 end

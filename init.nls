@@ -121,9 +121,9 @@ to set-resident-properties
   if adoption-speed <= 0 [set adoption-speed 0.01]
   if adoption-speed > 1 [set adoption-speed 1]
   
-  set utility-weight random-normal 0.5 0.15   ;; 1 means 100% utility based, 0 means 100% modality preference bases
-  if utility-weight < 0 [set utility-weight 0]
-  if utility-weight > 1 [set utility-weight 1]
+  set preference-utility-tradeoff random-normal 0.5 0.15   ;; 1 means 100% utility based, 0 means 100% modality preference bases
+  if preference-utility-tradeoff < 0 [set preference-utility-tradeoff 0]
+  if preference-utility-tradeoff > 1 [set preference-utility-tradeoff 1]
   
   set work-days random-poisson mean-weekly-work-trips
   if work-days > 6 [set work-days 6]  ;; Note that this lowers the actual average a bit

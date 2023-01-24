@@ -12,7 +12,7 @@ spots-own [capacity private? household-nr occupancy]
 households-own [driveway distance-spot distance-station child-wish monthly-costs-lists]
 residents-own [
   household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts work-destinations other-destinations monthly-costs-lists months-costs work-days other-days
-  adoption-speed modality-preference initial-modality-preference utility-weight value-of-time
+  adoption-speed modality-preference initial-modality-preference preference-utility-tradeoff value-of-time
   away?
 ]
 cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use?]
@@ -24,6 +24,7 @@ to setup
   load
   draw
   set patch-distance 0.018312102  ;; The distance one patch is in km
+
   setup-spots
   setup-station
   setup-households
