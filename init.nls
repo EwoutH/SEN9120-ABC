@@ -134,6 +134,7 @@ to set-resident-properties
 end
 
 to setup-cars
+  ;; TODO: Let car ownership depent on car preference
   let gets-car? false ;; initialize variable
   if age > 18 [
     ifelse parent?

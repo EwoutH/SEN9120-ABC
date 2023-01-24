@@ -4,26 +4,27 @@ to start-trip [work?]
   ifelse work?
     [set destination one-of work-destinations]
     [set destination one-of other-destinations]
-  
-  ;; TODO:
-  ;; - Check if own car is available
+
+  ;; Check if own car is available
   let available-modalities ["bike" "public-transport"]
   if owns-car? [
     set available-modalities lput "car" available-modalities  
-    ;; Change to household cars
+    ;; TODO: Also check household cars
+    ;; This is complicated, because first all household members need to check if they need their own car,
+    ;; and only after the not used cars can be distributed among other household members (people will generally use their own car first)
   ]
-  ;; - Check if shared-car is available
+  ;; Check if shared-car is available
   if any? cars with [shared? and not in-use?] [
     set available-modalities lput "shared-car" available-modalities 
   ]  
-  
-  ;; - Choose modality based on a concious choice or previous choice, if previous choice is available
+
+  ;; Choose modality based on a concious choice or previous choice, if previous choice is available
   let last-modality table:get destination "last-modality"
-  
+
   let new-choice? not member? last-modality available-modalities or random-float 1 < (1 / max list 1 table:get destination "consecutive-count")
   let modality ""
   ifelse new-choice? [
-    
+
     ;; Create a list with the effective costs for each available modality
     let eff-costs []
     foreach available-modalities [
@@ -42,7 +43,7 @@ to start-trip [work?]
        [set eff-costs replace-item 2 eff-costs (item 2 eff-costs + walking-costs)]
     ]
 
-    ;; - Calculate utility for each modality based on where cars are parked, and normalize to 0 to 1 range (1 is zero costs, 0 is the maximum costs)
+    ;; Calculate utility for each modality based on where cars are parked, and normalize to 0 to 1 range (1 is zero costs, 0 is the maximum costs)
     let max-costs max eff-costs
     let min-costs min eff-costs
     let utility []
@@ -50,8 +51,8 @@ to start-trip [work?]
       [key] -> set utility lput ((max-costs - key + min-costs) / max-costs) utility
     ]
 
-    ;; - Calculate preference for each modality based on preference, utility and preference-utility-tradeoff:
-    ;;         preference = utility * preference-utility-tradeoff + preference * (1 - preference-utility-tradeoff)
+    ;; Calculate preference for each modality based on preference, utility and preference-utility-tradeoff:
+    ;;     preference = utility * preference-utility-tradeoff + preference * (1 - preference-utility-tradeoff)
     let i 0
     let preferences table:make
     foreach available-modalities [
@@ -59,17 +60,16 @@ to start-trip [work?]
       set i i + 1
     ]
     let max-preference max table:values preferences
-    
+
     foreach available-modalities [
       [key] -> if table:get preferences key = max-preference [set modality key]
     ]
   ]
   [
     set modality last-modality 
-    ;; Choose new modality because the initial modality is not available
   ]
 
-  ;; - Use that modality to make trip (move turtle (and car) to certain point)
+  ;; TODO: Use that modality to make trip (move turtle (and car) to certain point)
   
   ifelse modality = table:get destination "last-modality"
     [table:put destination "consecutive-count" table:get destination "consecutive-count" + 1]
