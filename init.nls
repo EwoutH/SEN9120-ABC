@@ -111,11 +111,29 @@ to set-resident-properties
   set household-nr myself
   set away? false
   
+  ;; Set up normal distributions for the initial individual modality preferences.
+  ;; Limitation: normal distributions are not completely acurate in the real world.
+  let car-preference random-normal initial-car-preference 0.15
+  if car-preference <= 0 [set car-preference 0.01]
+  if car-preference > 1 [set car-preference 1]
+  
+  let bike-preference random-normal initial-bike-preference 0.15
+  if bike-preference <= 0 [set bike-preference 0.01]
+  if bike-preference > 1 [set bike-preference 1]
+  
+  let public-transport-preference random-normal initial-public-transport-preference 0.15
+  if public-transport-preference <= 0 [set public-transport-preference 0.01]
+  if public-transport-preference > 1 [set public-transport-preference 1]
+  
+  let shared-car-preference random-normal initial-shared-car-preference 0.15
+  if shared-car-preference <= 0 [set shared-car-preference 0.01]
+  if shared-car-preference > 1 [set shared-car-preference 1]
+  
   set modality-preference table:make
-  table:put modality-preference "car" random-float 1
-  table:put modality-preference "bike" random-float 1
-  table:put modality-preference "public-transport" random-float 1
-  table:put modality-preference "shared-car" random-float 1
+  table:put modality-preference "car" car-preference
+  table:put modality-preference "bike" bike-preference
+  table:put modality-preference "public-transport" public-transport-preference
+  table:put modality-preference "shared-car" shared-car-preference
   
   set adoption-speed random-normal 0.5 0.15
   if adoption-speed <= 0 [set adoption-speed 0.01]
@@ -134,13 +152,12 @@ to set-resident-properties
 end
 
 to setup-cars
-  ;; TODO: Let car ownership depent on car preference
+  ;; If the preferred mode of transport is the car, a resident gets a car
   let gets-car? false ;; initialize variable
-  if age > 18 [
-    ifelse parent?
-      [set gets-car? random-float 1 < initial-car-chance-parent / 100]
-      [set gets-car? random-float 1 < initial-car-chance-child / 100]
-  ]
+  
+  let preferred-mode-value max table:values modality-preference 
+  if age >= 18 and table:get modality-preference "car" = preferred-mode-value [set gets-car? true]
+
   ifelse gets-car?
     [set owns-car? true
       hatch-cars 1 [set-car-properties]
