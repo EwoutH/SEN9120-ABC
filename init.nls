@@ -39,9 +39,23 @@ to setup-station
     let loc gis:location-of center
 
     if length loc >= 2 [
-      ask patch item 0 loc item 1 loc [set pcolor yellow set station? true]
+      ask patch item 0 loc item 1 loc [set pcolor pink set station? true]
     ]
   ]
+end
+
+to setup-virtual-locations
+  ask patches with [station?] [
+    ask patch-at 5 0 [set pcolor blue]    ;; Bike
+    ask patch-at 10 0 [set pcolor red]    ;; Car
+    ask patch-at 15 0 [set pcolor green]  ;; Shared car
+  ]
+  
+  set virtual-locations table:make
+  table:put virtual-locations "public-transport" pink
+  table:put virtual-locations "bike" blue
+  table:put virtual-locations "car" red
+  table:put virtual-locations "shared-car" green
 end
 
 ;; TODO: Also create virtual spots for residents to travel to when traveling with shared car, etc.
@@ -180,9 +194,23 @@ to set-car-properties
   set shape "car"
   set size 0.5
   set shared? false
-  let target-spot min-one-of spots with [not private? and occupancy < capacity] [distance myself]
-  move-to target-spot
-  ask target-spot [set occupancy occupancy + 1]
+  set in-use? false
+  park-car
+end
+
+to park-car
+  ifelse shared? [
+    
+  ] [
+    let target-spot min-one-of spots with [not private? and occupancy < capacity] [distance myself]
+    move-to target-spot
+    ask target-spot [set occupancy occupancy + 1]
+  ]
+end
+
+to drive-car [target-color]
+  ask min-one-of spots [distance myself] [set occupancy occupancy - 1] 
+  move-to one-of patches with [pcolor = target-color]
 end
 ;;[owner shared? age yearly-costs km-costs mileage lease? in-use?]
 

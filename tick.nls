@@ -69,8 +69,15 @@ to start-trip [work?]
     set modality last-modality 
   ]
 
-  ;; TODO: Use that modality to make trip (move turtle (and car) to certain point)
+  ;; Move car
+  if modality = "car" [
+    ask car-nr [
+      set in-use? true
+      drive-car table:get virtual-locations modality
+    ]
+  ]
   
+  ;; Update destination table with the last modality
   ifelse modality = table:get destination "last-modality"
     [table:put destination "consecutive-count" table:get destination "consecutive-count" + 1]
     [table:put destination "last-modality" modality
@@ -86,7 +93,10 @@ to end-trip
   ;; - Update preference somehow
   ;; - Save this modality as last used and increase a counter wiht +1 how many times this modality was used
   ;; - Move turtle (and car) back
-
+  if owns-car? [ask car-nr [if in-use? [
+    set in-use? false
+    park-car
+  ]]]
   set away? false
 end
 

@@ -1,6 +1,6 @@
 __includes ["init.nls" "tick.nls"]
 extensions [gis rnd table]
-globals [parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection day month year days-in-year patch-distance walking-speed]
+globals [parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection day month year days-in-year patch-distance walking-speed virtual-locations]
 
 breed [spots spot]
 breed [households household]
@@ -27,6 +27,7 @@ to setup
   set walking-speed 5
   setup-spots
   setup-station
+  setup-virtual-locations
   setup-households
   ;; setup-contacts
   setup-destinations
@@ -101,9 +102,9 @@ ticks
 60.0
 
 BUTTON
-24
+25
 103
-87
+88
 136
 NIL
 setup
@@ -333,7 +334,7 @@ days-in-month
 days-in-month
 2
 31
-30.0
+5.0
 1
 1
 NIL
@@ -348,7 +349,7 @@ months-in-year
 months-in-year
 2
 12
-12.0
+3.0
 1
 1
 NIL
