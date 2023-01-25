@@ -117,6 +117,27 @@ to update-destinations
 
 end
 
+to buy-sell-car
+  let total-car-costs min-monthly-costs-car + fixed-car-costs
+  let total-costs min-monthly-costs
+  
+  ifelse owns-car? [
+    if total-car-costs > total-costs [
+      ;; consider selling car
+      
+    ]
+  ] [
+    if min-monthly-costs-car + fixed-car-costs < min-monthly-costs [
+      ;; consider buying car
+    ]
+  ]
+  
+  let non-car-preference mean remove-item 0 table:values modality-preference 
+  let sell-car-chance (sqrt ((total-car-costs - total-costs) / total-car-costs) * preference-utility-tradeoff) + (non-car-preference - table:get modality-preference "car") * (1 - preference-utility-tradeoff)
+  
+  
+end 
+
 to update-preferences [contact-preferences]
   let alpha social-adoption-multiplier * adoption-speed
   foreach (table:keys modality-preference) [

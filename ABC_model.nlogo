@@ -62,6 +62,8 @@ to go-monthly
   ;; - Pay train or car-sharing fees
   ;; - Consider new subscriptions or canceling ones
   ;; - Consider buying or selling a car
+  ask residents [buy-sell-car]
+  ;; - Reset monthly costs
   ;; - Add and remove connections (meet new people and lose contact with)
   set month month + 1
 end
@@ -334,7 +336,7 @@ days-in-month
 days-in-month
 2
 31
-9.0
+31.0
 1
 1
 NIL
@@ -349,7 +351,7 @@ months-in-year
 months-in-year
 2
 12
-4.0
+2.0
 1
 1
 NIL
@@ -649,8 +651,8 @@ SLIDER
 882
 772
 915
-car-monthly-costs
-car-monthly-costs
+fixed-car-costs
+fixed-car-costs
 0
 500
 257.0
