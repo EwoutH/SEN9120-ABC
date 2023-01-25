@@ -11,7 +11,7 @@ patches-own [station?]
 spots-own [capacity private? household-nr occupancy]
 households-own [driveway distance-spot distance-station child-wish monthly-costs-lists]
 residents-own [
-  household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts work-destinations other-destinations monthly-costs-lists months-costs work-days other-days
+  household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts work-destinations other-destinations min-monthly-costs min-monthly-costs-car work-days other-days
   adoption-speed modality-preference initial-modality-preference preference-utility-tradeoff value-of-time
   away?
 ]
@@ -334,7 +334,7 @@ days-in-month
 days-in-month
 2
 31
-5.0
+9.0
 1
 1
 NIL
@@ -349,7 +349,7 @@ months-in-year
 months-in-year
 2
 12
-3.0
+4.0
 1
 1
 NIL

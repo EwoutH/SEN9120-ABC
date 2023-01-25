@@ -43,9 +43,20 @@ to start-trip [work?]
        [set eff-costs replace-item 2 eff-costs (item 2 eff-costs + walking-costs)]
     ]
 
-    ;; Calculate utility for each modality based on where cars are parked, and normalize to 0 to 1 range (1 is zero costs, 0 is the maximum costs)
     let max-costs max eff-costs
     let min-costs min eff-costs
+
+    ifelse member? "car" available-modalities [
+      set min-monthly-costs-car min-monthly-costs-car + min-costs
+      let min-costs-without-car min remove-item 2 eff-costs
+      set min-monthly-costs min-monthly-costs + min-costs-without-car
+    ] [
+      set min-monthly-costs min-monthly-costs + min-costs
+      let costs-with-car table:get destination "eff-car-costs"
+      set min-monthly-costs-car min-monthly-costs-car + min list min-costs costs-with-car  ;; Note walking costs are ignored here, since they can't be calculated without a car location
+    ]
+    
+    ;; Calculate utility for each modality based on where cars are parked, and normalize to 0 to 1 range (1 is zero costs, 0 is the maximum costs)
     let utility []
     foreach eff-costs [
       [key] -> set utility lput ((max-costs - key + min-costs) / max-costs) utility
