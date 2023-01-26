@@ -12,7 +12,7 @@ spots-own [capacity private? household-nr occupancy]
 households-own [driveway distance-spot distance-station child-wish monthly-costs-lists]
 residents-own [
   household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts work-destinations other-destinations min-monthly-costs min-monthly-costs-car work-days other-days
-  adoption-speed modality-preference initial-modality-preference preference-utility-tradeoff value-of-time
+  adoption-speed modality-preference initial-modality-preference preference-utility-tradeoff value-of-time total-car-costs total-costs
   away?
 ]
 cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use?]
@@ -120,10 +120,10 @@ NIL
 1
 
 BUTTON
-25
-243
-99
-276
+21
+215
+95
+248
 NIL
 clear-all
 NIL
@@ -137,10 +137,10 @@ NIL
 1
 
 MONITOR
-111
-100
-193
-145
+114
+102
+196
+147
 households
 count households
 17
@@ -170,10 +170,10 @@ sum [driveway] of households
 11
 
 MONITOR
-114
-295
-171
-340
+115
+254
+172
+299
 parents
 count residents with [parent?]
 17
@@ -181,10 +181,10 @@ count residents with [parent?]
 11
 
 MONITOR
-113
-347
-174
-392
+178
+254
+239
+299
 childeren
 count residents with [not parent?]
 17
@@ -192,10 +192,10 @@ count residents with [not parent?]
 11
 
 MONITOR
-115
-431
-200
-476
+178
+305
+263
+350
 total child wish
 sum [child-wish] of households
 17
@@ -218,10 +218,10 @@ initial-car-chance-parent
 HORIZONTAL
 
 MONITOR
-37
-296
-108
-341
+203
+204
+274
+249
 cars
 count cars
 17
@@ -245,9 +245,9 @@ HORIZONTAL
 
 MONITOR
 200
-155
+153
 282
-200
+198
 available spots
 sum [capacity] of spots - sum [occupancy] of spots
 17
@@ -275,10 +275,10 @@ PENS
 "total" 1.0 1 -13840069 true "" "histogram [age] of cars"
 
 BUTTON
-66
-173
-121
-206
+29
+177
+84
+210
 NIL
 go
 T
@@ -292,10 +292,10 @@ NIL
 1
 
 BUTTON
-6
-170
-61
-203
+29
+140
+84
+173
 NIL
 go
 NIL
@@ -335,7 +335,7 @@ days-in-month
 days-in-month
 2
 31
-31.0
+10.0
 1
 1
 NIL
@@ -519,7 +519,7 @@ average-neighbour-contacts
 average-neighbour-contacts
 0
 25
-3.0
+4.0
 1
 1
 NIL
@@ -921,6 +921,21 @@ Means for initial individual preference distribution
 10
 0.0
 1
+
+SLIDER
+81
+431
+253
+464
+amount-of-shared-cars
+amount-of-shared-cars
+0
+200
+33.0
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?

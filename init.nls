@@ -177,7 +177,7 @@ to setup-cars
 
   ifelse gets-car?
     [set owns-car? true
-      hatch-cars 1 [set-car-properties]
+      hatch-cars 1 [set-car-properties false]
       set car-nr one-of cars with [owner = myself]
     ]
     [set owns-car? false
@@ -185,32 +185,44 @@ to setup-cars
     ]
 end
 
-to set-car-properties
-  set owner myself
-  set shared? false
-  set lease? random-float 1 < 0.12  ;; CBS
-  ifelse lease?
-    [set age random 4
-     set mileage age * (9000 + random 18000)]
-    [set age random 10
-     set mileage age * (5000 + random 10000)]
-  ;; TODO: Think about (yearly) costs
+to setup-shared-cars
+  create-cars amount-of-shared-cars [
+    set-car-properties true
+  ]
+end 
 
-  set shape "car"
+to set-car-properties [is-shared?]
+  set shared? is-shared?
   set size 0.5
-  set shared? false
-  set in-use? false
+  set shape "car"
+  
+  ifelse shared? [
+    set owner nobody
+    set color green 
+  ] [
+    set owner myself
+    set lease? random-float 1 < 0.12  ;; CBS
+    ifelse lease?
+      [set age random 4
+       set mileage age * (9000 + random 18000)]
+      [set age random 10
+       set mileage age * (5000 + random 10000)]
+      set in-use? false
+  ]  
   park-car
 end
 
 to park-car
   ifelse shared? [
-    
+    let target-spot one-of spots with [member? self [1 31 22 15 45]]
+    move-to target-spot
+      ask target-spot [set occupancy occupancy + 1] 
   ] [
     let target-spot min-one-of spots with [not private? and occupancy < capacity] [distance myself]
     move-to target-spot
-    ask target-spot [set occupancy occupancy + 1]
+      ask target-spot [set occupancy occupancy + 1]
   ]
+  
 end
 
 to drive-car [target-color]
