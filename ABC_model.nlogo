@@ -30,7 +30,6 @@ to setup
   setup-virtual-locations
   setup-households
   ;; setup-contacts
-  setup-destinations
   ask spots [set label (capacity - occupancy)]
   set days-in-year days-in-month * months-in-year
   reset-ticks
@@ -351,7 +350,7 @@ months-in-year
 months-in-year
 2
 12
-2.0
+8.0
 1
 1
 NIL
@@ -455,7 +454,7 @@ variance-distance-work
 variance-distance-work
 0
 800
-440.0
+443.0
 1
 1
 NIL
@@ -520,7 +519,7 @@ average-neighbour-contacts
 average-neighbour-contacts
 0
 25
-2.0
+3.0
 1
 1
 NIL

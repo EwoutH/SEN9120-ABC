@@ -82,6 +82,7 @@ to setup-household [loc]
     set distance-station distance one-of patches with [station?] * patch-distance
 
     setup-residents
+    
   ]
 end
 
@@ -95,6 +96,7 @@ to setup-residents
     set color yellow
     set-resident-properties
     setup-cars
+    setup-destinations
   ]
 
   ;; Determine their child wish and the approximate age of their childeren (between 20 and 30 years younger)
@@ -113,6 +115,7 @@ to setup-residents
           set color orange
           set-resident-properties
           setup-cars
+          setup-destinations
         ]
       ]
     ]
@@ -177,7 +180,9 @@ to setup-cars
       hatch-cars 1 [set-car-properties]
       set car-nr one-of cars with [owner = myself]
     ]
-    [set owns-car? false]
+    [set owns-car? false
+      set car-nr nobody  
+    ]
 end
 
 to set-car-properties
@@ -255,10 +260,8 @@ to setup-contacts
 end
 
 to setup-destinations
-  ask residents [
     set work-destinations n-values 1 [create-destination true]
     set other-destinations n-values 3 [create-destination false]
-  ]
 end
 
 to-report create-destination [work?]

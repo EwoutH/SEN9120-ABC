@@ -23,39 +23,40 @@ to start-trip [work?]
 
   let new-choice? not member? last-modality available-modalities or random-float 1 < (1 / max list 1 table:get destination "consecutive-count")
   let modality ""
+ 
+
+  ;; Create a list with the effective costs for each available modality
+  let eff-costs []
+  foreach available-modalities [
+    [key] -> set eff-costs lput (table:get destination (word "eff-" key "-costs")) eff-costs
+  ]
+
+  ;; Update the car and shared-car costs with the walking distance
+  if member? "car" available-modalities [
+    let walking-costs distance car-nr * patch-distance / walking-speed * value-of-time
+    set eff-costs replace-item 2 eff-costs (item 2 eff-costs + walking-costs)
+  ]
+  if member? "shared-car" available-modalities [
+    let walking-costs distance min-one-of cars with [shared? and not in-use?] [distance myself] * patch-distance / walking-speed * value-of-time
+    ifelse member? "car" available-modalities   ;; The shared car is the fourth (3) item if a car is also available, otherwise the third (2) item
+     [set eff-costs replace-item 3 eff-costs (item 3 eff-costs + walking-costs)]
+     [set eff-costs replace-item 2 eff-costs (item 2 eff-costs + walking-costs)]
+  ]
+
+  let max-costs max eff-costs
+  let min-costs min eff-costs
+
+  ifelse member? "car" available-modalities [
+    set min-monthly-costs-car min-monthly-costs-car + min-costs
+    let min-costs-without-car min remove-item 2 eff-costs
+    set min-monthly-costs min-monthly-costs + min-costs-without-car
+  ] [
+    set min-monthly-costs min-monthly-costs + min-costs
+    let costs-with-car table:get destination "eff-car-costs"
+    set min-monthly-costs-car min-monthly-costs-car + min list min-costs costs-with-car  ;; Note walking costs are ignored here, since they can't be calculated without a car location
+  ]
+
   ifelse new-choice? [
-
-    ;; Create a list with the effective costs for each available modality
-    let eff-costs []
-    foreach available-modalities [
-      [key] -> set eff-costs lput (table:get destination (word "eff-" key "-costs")) eff-costs
-    ]
-
-    ;; Update the car and shared-car costs with the walking distance
-    if member? "car" available-modalities [
-      let walking-costs distance car-nr * patch-distance / walking-speed * value-of-time
-      set eff-costs replace-item 2 eff-costs (item 2 eff-costs + walking-costs)
-    ]
-    if member? "shared-car" available-modalities [
-      let walking-costs distance min-one-of cars with [shared? and not in-use?] [distance myself] * patch-distance / walking-speed * value-of-time
-      ifelse member? "car" available-modalities   ;; The shared car is the fourth (3) item if a car is also available, otherwise the third (2) item
-       [set eff-costs replace-item 3 eff-costs (item 3 eff-costs + walking-costs)]
-       [set eff-costs replace-item 2 eff-costs (item 2 eff-costs + walking-costs)]
-    ]
-
-    let max-costs max eff-costs
-    let min-costs min eff-costs
-
-    ifelse member? "car" available-modalities [
-      set min-monthly-costs-car min-monthly-costs-car + min-costs
-      let min-costs-without-car min remove-item 2 eff-costs
-      set min-monthly-costs min-monthly-costs + min-costs-without-car
-    ] [
-      set min-monthly-costs min-monthly-costs + min-costs
-      let costs-with-car table:get destination "eff-car-costs"
-      set min-monthly-costs-car min-monthly-costs-car + min list min-costs costs-with-car  ;; Note walking costs are ignored here, since they can't be calculated without a car location
-    ]
-    
     ;; Calculate utility for each modality based on where cars are parked, and normalize to 0 to 1 range (1 is zero costs, 0 is the maximum costs)
     let utility []
     foreach eff-costs [
@@ -117,25 +118,37 @@ to update-destinations
 
 end
 
+;; Function for selling and buying cars, the chance of selling or buying a car is determined by the ownership of car first, then the function checks if costs can be saved by choosing 
+;; an alternative mode of transport, this difference is divided by the total costs and multiplied by a tradeoff. Then the difference in modality preference is added.
 to buy-sell-car
   let total-car-costs min-monthly-costs-car + fixed-car-costs
   let total-costs min-monthly-costs
+  let non-car-preference mean remove-item 0 table:values modality-preference 
   
   ifelse owns-car? [
     if total-car-costs > total-costs [
       ;; consider selling car
-      
+      let sell-car-chance ((total-car-costs - total-costs) / total-car-costs * preference-utility-tradeoff) + (non-car-preference - table:get modality-preference "car") * (1 - preference-utility-tradeoff)
+        if random-float 1 < sell-car-chance [
+          set owns-car? false
+          ask cars with [owner = myself][
+            die
+          ]
+        ]
     ]
   ] [
-    if min-monthly-costs-car + fixed-car-costs < min-monthly-costs [
+    if total-car-costs < total-costs [
       ;; consider buying car
+      let buy-car-chance ((total-costs - total-car-costs) / total-costs * preference-utility-tradeoff) + (table:get modality-preference "car" - non-car-preference) * (1 - preference-utility-tradeoff)
+        if random-float 1 < buy-car-chance [
+          set owns-car? true
+          hatch-cars 1 [set-car-properties]
+          set car-nr one-of cars with [owner = myself]
+        ]
     ]
   ]
-  
-  let non-car-preference mean remove-item 0 table:values modality-preference 
-  let sell-car-chance (sqrt ((total-car-costs - total-costs) / total-car-costs) * preference-utility-tradeoff) + (non-car-preference - table:get modality-preference "car") * (1 - preference-utility-tradeoff)
-  
-  
+  set min-monthly-costs 0
+  set min-monthly-costs-car 0
 end 
 
 to update-preferences [contact-preferences]
