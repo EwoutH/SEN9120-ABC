@@ -26,12 +26,13 @@ to setup
   set patch-distance 0.018312102  ;; The distance one patch is in km
   set walking-speed 5
   setup-spots
+  setup-shared-spots
   setup-station
   setup-virtual-locations
   setup-households
   setup-shared-cars
   ;; setup-contacts
-  ask spots [set label (capacity - occupancy)]
+  update-labels
   set days-in-year days-in-month * months-in-year
   reset-ticks
 end
@@ -53,7 +54,7 @@ to go-daily
 
   ;; - Spread info to household
   ;; - Chance of spreading info to connections
-
+  update-labels
   set day day + 1
 end
 
@@ -924,19 +925,30 @@ Means for initial individual preference distribution
 1
 
 SLIDER
-81
-431
-253
-464
+13
+477
+185
+510
 amount-of-shared-cars
 amount-of-shared-cars
 0
-200
-45.0
-1
+168
+40.0
+8
 1
 NIL
 HORIZONTAL
+
+SWITCH
+14
+437
+223
+470
+only-park-designated-spots?
+only-park-designated-spots?
+0
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?

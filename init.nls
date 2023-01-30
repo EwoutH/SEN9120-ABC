@@ -27,8 +27,18 @@ to setup-spots
         set size 0.1
         set label capacity
         set private? false
+        ;; shared-capacity is by default 0 
       ]
     ]
+  ]
+end
+
+to setup-shared-spots
+  ask spots with [member? [who] of self [1 5 15 18 22 27 31 45]] [
+    set shared-capacity int (amount-of-shared-cars / 8)
+    set capacity capacity - shared-capacity   ;; TODO: Consider making less shared-capacity when only-park-designated-spots? is false
+    set label (word capacity "-" shared-capacity)
+    set label-color 68
   ]
 end
 
@@ -214,9 +224,15 @@ end
 
 to park-car
   ifelse shared? [
-    let target-spot one-of spots with [member? [who] of self [1 5 15 18 22 27 31 45]]
+    let target-spot nobody
+    ifelse only-park-designated-spots?  ;; TODO
+      [set target-spot min-one-of spots with [shared-occupancy < shared-capacity] [distance myself]]
+      [set target-spot min-one-of spots with [shared-occupancy < shared-capacity or occupancy < capacity] [distance myself]] 
     move-to target-spot
-      ask target-spot [set occupancy occupancy + 1] 
+    ask target-spot [ifelse shared-occupancy < shared-capacity
+      [set shared-occupancy shared-occupancy + 1]
+      [set occupancy occupancy + 1]
+    ]
   ] [
     let target-spot min-one-of spots with [not private? and occupancy < capacity] [distance myself]
     move-to target-spot
@@ -226,7 +242,16 @@ to park-car
 end
 
 to drive-car [target-color]
-  ask min-one-of spots [distance myself] [set occupancy occupancy - 1] 
+  let current-spot min-one-of spots [distance myself]
+  ifelse shared? [
+    ask current-spot [
+      ifelse shared-occupancy > 0
+        [set shared-occupancy shared-occupancy - 1]
+        [set occupancy occupancy - 1]
+    ]
+  ] [
+    ask current-spot [set occupancy occupancy - 1]
+  ]
   move-to one-of patches with [pcolor = target-color]
 end
 ;;[owner shared? age yearly-costs km-costs mileage lease? in-use?]

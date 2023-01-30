@@ -191,3 +191,10 @@ to move-out-child
     ]
   ]
 end
+
+to update-labels
+  ask spots [ifelse shared-capacity = 0
+    [set label (capacity - occupancy)]
+    [set label (word (capacity - occupancy) "-" (shared-capacity - shared-occupancy))]
+  ]
+end
