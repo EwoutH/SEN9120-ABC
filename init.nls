@@ -214,7 +214,7 @@ end
 
 to park-car
   ifelse shared? [
-    let target-spot one-of spots with [member? self [1 31 22 15 45]]
+    let target-spot one-of spots with [member? [who] of self [1 5 15 18 22 27 31 45]]
     move-to target-spot
       ask target-spot [set occupancy occupancy + 1] 
   ] [

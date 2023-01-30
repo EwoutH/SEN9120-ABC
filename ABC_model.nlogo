@@ -8,7 +8,7 @@ breed [residents resident]
 breed [cars car]
 
 patches-own [station?]
-spots-own [capacity private? household-nr occupancy]
+spots-own [capacity shared-capacity private? household-nr occupancy shared-occupancy]
 households-own [driveway distance-spot distance-station child-wish monthly-costs-lists]
 residents-own [
   household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts work-destinations other-destinations min-monthly-costs min-monthly-costs-car work-days other-days
@@ -29,6 +29,7 @@ to setup
   setup-station
   setup-virtual-locations
   setup-households
+  setup-shared-cars
   ;; setup-contacts
   ask spots [set label (capacity - occupancy)]
   set days-in-year days-in-month * months-in-year
@@ -931,7 +932,7 @@ amount-of-shared-cars
 amount-of-shared-cars
 0
 200
-33.0
+45.0
 1
 1
 NIL
