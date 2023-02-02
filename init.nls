@@ -32,6 +32,18 @@ to setup-spots
       ]
     ]
   ]
+  ;;
+  if remove-spots-percentage > 0 [
+    let original-capacity sum [capacity] of spots with [in-neighbourhood?]
+    let capacity-removed 0
+    while [capacity-removed < remove-spots-percentage * 0.01 * original-capacity] [
+      ask one-of spots with [capacity > 0] [
+        set capacity capacity - 1
+        set capacity-removed capacity-removed + 1
+      ]
+    ]
+  ]
+  
   
   ;; Setup one large spot outside the neighbourhood
   create-spots 1 [

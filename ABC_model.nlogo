@@ -161,10 +161,10 @@ sum [capacity] of spots with [is-number? capacity]
 11
 
 MONITOR
-114
-204
-198
-249
+111
+202
+195
+247
 private parking
 sum [driveway] of households
 17
@@ -172,10 +172,10 @@ sum [driveway] of households
 11
 
 MONITOR
-115
-254
-172
-299
+112
+252
+169
+297
 parents
 count residents with [parent?]
 17
@@ -183,10 +183,10 @@ count residents with [parent?]
 11
 
 MONITOR
-178
-254
-239
-299
+175
+252
+236
+297
 childeren
 count residents with [not parent?]
 17
@@ -194,10 +194,10 @@ count residents with [not parent?]
 11
 
 MONITOR
-178
-305
-263
-350
+175
+303
+260
+348
 total child wish
 sum [child-wish] of households
 17
@@ -205,10 +205,10 @@ sum [child-wish] of households
 11
 
 MONITOR
-203
-204
-274
-249
+200
+202
+271
+247
 cars
 count cars
 17
@@ -929,7 +929,7 @@ preference-panelty-parking-outside-neighbourhood
 preference-panelty-parking-outside-neighbourhood
 0
 10
-5.0
+1.0
 0.1
 1
 %
@@ -963,6 +963,21 @@ mean [table:get modality-preference \"car\"] of residents
 5
 1
 11
+
+SLIDER
+16
+518
+221
+551
+remove-spots-percentage
+remove-spots-percentage
+0
+100
+40.0
+1
+1
+%
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
