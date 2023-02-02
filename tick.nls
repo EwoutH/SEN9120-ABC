@@ -120,8 +120,8 @@ end
 
 ;; Function for selling and buying cars, the chance of selling or buying a car is determined by the ownership of car first, then the function checks if costs can be saved by choosing 
 ;; an alternative mode of transport, this difference is divided by the total costs and multiplied by a tradeoff. Then the difference in modality preference is added.
-to buy-sell-car
-  set total-car-costs min-monthly-costs-car + fixed-car-costs / 31 * days-in-month
+to buy-sell-car 
+  set total-car-costs min-monthly-costs-car + (fixed-car-costs + parking-permit-costs) / 31 * days-in-month
   set total-costs min-monthly-costs
   let non-car-preference mean remove-item 0 table:values modality-preference 
   

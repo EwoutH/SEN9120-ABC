@@ -634,9 +634,9 @@ HORIZONTAL
 
 SLIDER
 389
-944
+976
 583
-977
+1009
 public-transport-fixed-costs
 public-transport-fixed-costs
 0
@@ -649,9 +649,9 @@ HORIZONTAL
 
 SLIDER
 590
-944
+976
 792
-977
+1009
 public-transport-costs-per-km
 public-transport-costs-per-km
 0
@@ -977,6 +977,21 @@ remove-spots-percentage
 1
 1
 %
+HORIZONTAL
+
+SLIDER
+14
+396
+186
+429
+parking-permit-costs
+parking-permit-costs
+0
+200
+93.0
+1
+1
+€
 HORIZONTAL
 
 @#$#@#$#@
