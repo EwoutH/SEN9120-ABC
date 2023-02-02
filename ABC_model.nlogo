@@ -8,7 +8,7 @@ breed [residents resident]
 breed [cars car]
 
 patches-own [station?]
-spots-own [capacity shared-capacity private? household-nr occupancy shared-occupancy]
+spots-own [capacity shared-capacity private? household-nr occupancy shared-occupancy in-neighbourhood?]
 households-own [driveway distance-spot distance-station child-wish monthly-costs-lists]
 residents-own [
   household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts work-destinations other-destinations min-monthly-costs min-monthly-costs-car work-days other-days
@@ -204,21 +204,6 @@ sum [child-wish] of households
 1
 11
 
-SLIDER
-21
-709
-221
-742
-initial-car-chance-parent
-initial-car-chance-parent
-0
-100
-60.0
-1
-1
-%
-HORIZONTAL
-
 MONITOR
 203
 204
@@ -229,21 +214,6 @@ count cars
 17
 1
 11
-
-SLIDER
-22
-673
-211
-706
-initial-car-chance-child
-initial-car-chance-child
-0
-100
-20.0
-1
-1
-%
-HORIZONTAL
 
 MONITOR
 200
@@ -337,7 +307,7 @@ days-in-month
 days-in-month
 2
 31
-10.0
+4.0
 1
 1
 NIL
@@ -352,7 +322,7 @@ months-in-year
 months-in-year
 2
 12
-8.0
+2.0
 1
 1
 NIL

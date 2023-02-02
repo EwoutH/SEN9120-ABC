@@ -27,10 +27,22 @@ to setup-spots
         set size 0.1
         set label capacity
         set private? false
+        set in-neighbourhood? true
         ;; shared-capacity is by default 0 
       ]
     ]
   ]
+  
+  ;; Setup one large spot outside the neighbourhood
+  create-spots 1 [
+    setxy -31 12
+    set shape "square"
+    set color red
+    set size 2
+    set label capacity
+    set private? false
+    set in-neighbourhood? false
+  ] 
 end
 
 to setup-shared-spots
@@ -225,16 +237,17 @@ end
 to park-car
   ifelse shared? [
     let target-spot nobody
-    ifelse only-park-designated-spots?  ;; TODO
-      [set target-spot min-one-of spots with [shared-occupancy < shared-capacity] [distance myself]]
-      [set target-spot min-one-of spots with [shared-occupancy < shared-capacity or occupancy < capacity] [distance myself]] 
+    ifelse only-park-designated-spots?
+      [set target-spot min-one-of spots with [shared-occupancy < shared-capacity] [distance myself]] ;; TODO: When not parking on designated spots, they park top left. Give them a home spot of some kind
+      [set target-spot min-one-of spots with [shared-occupancy < shared-capacity or occupancy < capacity] [distance myself]]
     move-to target-spot
     ask target-spot [ifelse shared-occupancy < shared-capacity
       [set shared-occupancy shared-occupancy + 1]
       [set occupancy occupancy + 1]
     ]
   ] [
-    let target-spot min-one-of spots with [not private? and occupancy < capacity] [distance myself]
+    let target-spot min-one-of spots with [in-neighbourhood? and not private? and occupancy < capacity] [distance [owner] of myself]
+    if target-spot = nobody [set target-spot one-of spots with [not in-neighbourhood?]]
     move-to target-spot
       ask target-spot [set occupancy occupancy + 1]
   ]
