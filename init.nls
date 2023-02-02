@@ -247,7 +247,12 @@ to park-car
     ]
   ] [
     let target-spot min-one-of spots with [in-neighbourhood? and not private? and occupancy < capacity] [distance [owner] of myself]
-    if target-spot = nobody [set target-spot one-of spots with [not in-neighbourhood?]]
+    if target-spot = nobody [
+      set target-spot one-of spots with [not in-neighbourhood?]
+      ask owner [
+        table:put modality-preference "car" table:get modality-preference "car" * (1 - preference-panelty-parking-outside-neighbourhood * 0.01)
+      ]
+    ]
     move-to target-spot
       ask target-spot [set occupancy occupancy + 1]
   ]

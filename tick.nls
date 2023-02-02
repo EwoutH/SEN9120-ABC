@@ -132,6 +132,7 @@ to buy-sell-car
         if random-float 1 < sell-car-chance [
           set owns-car? false
           ask cars with [owner = myself][
+            drive-car table:get virtual-locations "car"
             die
           ]
         ]

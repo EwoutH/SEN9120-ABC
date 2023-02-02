@@ -322,7 +322,7 @@ months-in-year
 months-in-year
 2
 12
-2.0
+3.0
 1
 1
 NIL
@@ -919,6 +919,50 @@ only-park-designated-spots?
 0
 1
 -1000
+
+SLIDER
+1494
+916
+1799
+949
+preference-panelty-parking-outside-neighbourhood
+preference-panelty-parking-outside-neighbourhood
+0
+10
+5.0
+0.1
+1
+%
+HORIZONTAL
+
+PLOT
+1587
+333
+1787
+483
+plot 1
+NIL
+NIL
+0.0
+1.0
+0.0
+1.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot mean [table:get modality-preference \"car\"] of residents"
+
+MONITOR
+1611
+519
+1956
+564
+NIL
+mean [table:get modality-preference \"car\"] of residents
+5
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
