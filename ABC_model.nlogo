@@ -12,7 +12,7 @@ spots-own [capacity shared-capacity private? household-nr occupancy shared-occup
 households-own [driveway distance-spot distance-station child-wish monthly-costs-lists]
 residents-own [
   household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts work-destinations other-destinations min-monthly-costs min-monthly-costs-car work-days other-days
-  adoption-speed modality-preference initial-modality-preference preference-utility-tradeoff value-of-time total-car-costs total-costs modality-counter train-subscription shared-car-subscription
+  adoption-speed modality-preference initial-modality-preference preference-utility-tradeoff value-of-time total-car-costs total-costs modality-counter public-transport-subscription shared-car-subscription
   away?
 ]
 cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use?]

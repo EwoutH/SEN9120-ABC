@@ -27,7 +27,15 @@ to start-trip [work?]
   ;; Create a list with the effective costs for each available modality
   let eff-costs []
   foreach available-modalities [
-    [key] -> set eff-costs lput (table:get destination (word "eff-" key "-costs")) eff-costs
+    [key] ->
+      let modifier 1
+      if key = "shared-car" and shared-car-subscription [set modifier 0.75]    ;; 25% discount on all trips
+      if key = "public-transport" and public-transport-subscription [
+        ifelse work? 
+          [set modifier 0.8]  ;; 20% discount in rush-hour (work trips)
+          [set modifier 0.6]  ;; 40% discount otherwise (other trips)
+      ]
+      set eff-costs lput (table:get destination (word "eff-" key "-costs") * modifier) eff-costs 
   ]
 
   ;; Update the car and shared-car costs with subscriptions and the walking distance

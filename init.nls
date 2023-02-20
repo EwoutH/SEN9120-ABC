@@ -163,7 +163,7 @@ to set-resident-properties
   set heading random 360
   set household-nr myself
   set away? false
-  set train-subscription false
+  set public-transport-subscription false
   set shared-car-subscription false
   
   ;; Set up normal distributions for the initial individual modality preferences.
