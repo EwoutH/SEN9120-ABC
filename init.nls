@@ -131,6 +131,7 @@ to setup-residents
     set-resident-properties
     setup-cars
     setup-destinations
+    setup-contacts
   ]
 
   ;; Determine their child wish and the approximate age of their childeren (between 20 and 30 years younger)
@@ -150,6 +151,7 @@ to setup-residents
           set-resident-properties
           setup-cars
           setup-destinations
+          setup-contacts
         ]
       ]
     ]
@@ -298,17 +300,14 @@ to draw
 end
 
 to setup-contacts
-  print "Setting up contacts:"
   ;; Setup neighbours
-  ask residents [
-    let n-neighbours random-poisson average-neighbour-contacts  ;; Note that poisson might not be the ideal distribution
-    set neighbours-contacts up-to-n-of n-neighbours residents in-radius 3
-    ;; TODO: Maybe consider age
-  ]
+  let n-neighbours random-poisson average-neighbour-contacts  ;; Note that poisson might not be the ideal distribution
+  set neighbours-contacts up-to-n-of n-neighbours residents in-radius 3
+  ;; TODO: Maybe consider age
 
   ;; Setup contacts for parents with childeren of same age
-  ask residents [set parent-contacts n-of 0 residents]
-  ask residents with [parent?] [
+  set parent-contacts n-of 0 residents
+  if parent? [
     ;; Get ages of own childeren
     let childeren residents with [household-nr = [household-nr] of myself and not parent? and age <= 12]
     let ages sort [age] of childeren
@@ -323,7 +322,6 @@ to setup-contacts
       ]
     ]
   ]
-  ask n-of 10 residents [type "Neighbours: " type count neighbours-contacts type ", parent contacts: " type parent-contacts type ", total: " print count (turtle-set neighbours-contacts parent-contacts)]
 end
 
 to setup-destinations

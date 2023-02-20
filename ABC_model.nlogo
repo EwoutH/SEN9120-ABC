@@ -31,7 +31,7 @@ to setup
   setup-virtual-locations
   setup-households
   setup-shared-cars
-  setup-contacts
+  ask residents [setup-contacts]
   update-labels
   set days-in-year days-in-month * months-in-year
   reset-ticks
@@ -57,7 +57,6 @@ to go-daily
     let contact-preference-list [modality-preference] of residents with [household-nr = [household-nr] of myself]
       foreach contact-preference-list [[contact-preference] -> update-preferences contact-preference]
   ]
-
   ;; Update own modality preferences with info from neighbours
   ask residents [
     let contact-preference-list [modality-preference] of up-to-n-of random-poisson average-daily-neighbour-contacts neighbours-contacts
