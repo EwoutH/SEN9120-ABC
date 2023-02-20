@@ -12,7 +12,7 @@ spots-own [capacity shared-capacity private? household-nr occupancy shared-occup
 households-own [driveway distance-spot distance-station child-wish monthly-costs-lists]
 residents-own [
   household-nr age parent? owns-car? car-nr neighbours-contacts parent-contacts work-destinations other-destinations min-monthly-costs min-monthly-costs-car work-days other-days
-  adoption-speed modality-preference initial-modality-preference preference-utility-tradeoff value-of-time total-car-costs total-costs
+  adoption-speed modality-preference initial-modality-preference preference-utility-tradeoff value-of-time total-car-costs total-costs modality-counter train-subscription shared-car-subscription
   away?
 ]
 cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use?]
@@ -73,13 +73,15 @@ to go-daily
 end
 
 to go-monthly
-  ;; - Update destinations (add some and remove some)
+
   ;; - Pay train or car-sharing fees
   ;; - Consider new subscriptions or canceling ones
-  ;; - Consider buying or selling a car
+  ;; Consider buying or selling a car
   ask residents [buy-sell-car]
   ;; - Reset monthly costs
-  ;; - Add and remove connections (meet new people and lose contact with)
+
+  ;; - OUT-OF-SCOPE: Update destinations (add some and remove some)
+  ;; - OUT-OF-SCOPE: Add and remove connections (meet new people and lose contact with)
   set month month + 1
 end
 

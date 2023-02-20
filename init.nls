@@ -163,6 +163,8 @@ to set-resident-properties
   set heading random 360
   set household-nr myself
   set away? false
+  set train-subscription false
+  set shared-car-subscription false
   
   ;; Set up normal distributions for the initial individual modality preferences.
   ;; Limitation: normal distributions are not completely acurate in the real world.
@@ -202,6 +204,12 @@ to set-resident-properties
   if other-days > 7 [set other-days 7]
   
   set value-of-time random-gamma (mean-value-of-time * mean-value-of-time / variance-value-of-time) (1 / (variance-value-of-time / mean-value-of-time))
+  
+  set modality-counter table:make
+  table:put modality-counter "car" 0
+  table:put modality-counter "bike" 0
+  table:put modality-counter "public-transport" 0
+  table:put modality-counter "shared-car" 0
 end
 
 to setup-cars

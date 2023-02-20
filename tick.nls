@@ -23,7 +23,6 @@ to start-trip [work?]
 
   let new-choice? not member? last-modality available-modalities or random-float 1 < (1 / max list 1 table:get destination "consecutive-count")
   let modality ""
- 
 
   ;; Create a list with the effective costs for each available modality
   let eff-costs []
@@ -31,7 +30,7 @@ to start-trip [work?]
     [key] -> set eff-costs lput (table:get destination (word "eff-" key "-costs")) eff-costs
   ]
 
-  ;; Update the car and shared-car costs with the walking distance
+  ;; Update the car and shared-car costs with subscriptions and the walking distance
   if member? "car" available-modalities [
     let walking-costs distance car-nr * patch-distance / walking-speed * value-of-time
     set eff-costs replace-item 2 eff-costs (item 2 eff-costs + walking-costs)
@@ -94,6 +93,9 @@ to start-trip [work?]
     [table:put destination "consecutive-count" table:get destination "consecutive-count" + 1]
     [table:put destination "last-modality" modality
      table:put destination "consecutive-count" 1]
+  
+  ;; Update counter table
+  table:put modality-counter modality table:get modality-counter modality + 1
 
   set away? true
 end
@@ -116,6 +118,10 @@ end
 
 to update-destinations
 
+end
+
+to buy-sell-subscriptions
+  
 end
 
 ;; Function for selling and buying cars, the chance of selling or buying a car is determined by the ownership of car first, then the function checks if costs can be saved by choosing 
