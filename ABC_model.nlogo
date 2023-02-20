@@ -31,7 +31,7 @@ to setup
   setup-virtual-locations
   setup-households
   setup-shared-cars
-  ;; setup-contacts
+  setup-contacts
   update-labels
   set days-in-year days-in-month * months-in-year
   reset-ticks
@@ -52,8 +52,23 @@ to go-daily
   ask residents with [age >= 18] [if random-float 1 < other-days / 7 [start-trip false]]
   ask residents with [away?] [end-trip]
 
-  ;; - Spread info to household
-  ;; - Chance of spreading info to connections
+  ;; Update own modality preferences with info from household
+  ask residents [
+    let contact-preference-list [modality-preference] of residents with [household-nr = [household-nr] of myself]
+      foreach contact-preference-list [[contact-preference] -> update-preferences contact-preference]
+  ]
+
+  ;; Update own modality preferences with info from neighbours
+  ask residents [
+    let contact-preference-list [modality-preference] of up-to-n-of random-poisson average-daily-neighbour-contacts neighbours-contacts
+      foreach contact-preference-list [[contact-preference] -> update-preferences contact-preference]
+  ]
+  ;; Update own modality preferences with info from parents
+  ask residents [
+    let contact-preference-list [modality-preference] of up-to-n-of random-poisson average-daily-parent-contacts parent-contacts
+      foreach contact-preference-list [[contact-preference] -> update-preferences contact-preference]
+  ]
+
   update-labels
   set day day + 1
 end
@@ -992,6 +1007,36 @@ parking-permit-costs
 1
 1
 €
+HORIZONTAL
+
+SLIDER
+16
+667
+248
+700
+average-daily-neighbour-contacts
+average-daily-neighbour-contacts
+0
+5
+0.5
+0.1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+18
+706
+229
+739
+average-daily-parent-contacts
+average-daily-parent-contacts
+0
+5
+0.8
+0.1
+1
+NIL
 HORIZONTAL
 
 @#$#@#$#@
