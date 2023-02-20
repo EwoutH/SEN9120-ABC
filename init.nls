@@ -307,7 +307,7 @@ to setup-contacts
   ]
 
   ;; Setup contacts for parents with childeren of same age
-  ask residents [set parent-contacts nobody]
+  ask residents [set parent-contacts n-of 0 residents]
   ask residents with [parent?] [
     ;; Get ages of own childeren
     let childeren residents with [household-nr = [household-nr] of myself and not parent? and age <= 12]
