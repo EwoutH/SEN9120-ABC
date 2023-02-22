@@ -37,7 +37,7 @@ to setup
   reset-ticks
 end
 
-to go ;; one year
+to go  ;; one year
   repeat months-in-year [
     repeat days-in-month [go-daily]
     go-monthly
@@ -73,17 +73,18 @@ to go-daily
 end
 
 to go-monthly
-  ;; - Pay train or car-sharing fees
-  ;; - Consider new subscriptions or canceling ones
   ;; Consider buying or selling a car
   ask residents [buy-sell-car]
+  ;; Consider new subscriptions or canceling ones
   ask residents [buy-sell-subscriptions]
-  ;; - Reset monthly costs
 
-  ;; - OUT-OF-SCOPE: Update destinations (add some and remove some)
-  ;; - OUT-OF-SCOPE: Add and remove connections (meet new people and lose contact with)
+  ;; OUT-OF-SCOPE: Update destinations (add some and remove some)
+  ;; ask residents [update-connections]
+  ;; OUT-OF-SCOPE: Add and remove connections (meet new people and lose contact with)
+  ;; ask residents [update-destinations]
+
   set month month + 1
-  tick  ;; The tick is done each monthly, because that's the temporal resolution we wan't to gather data (KPIs) for our experiments with
+  tick                                     ;; The tick is done each monthly, because that's the temporal resolution we wan't to gather data (KPIs) for our experiments with
   ask residents [reset-modality-counter]   ;; After subscription decisions are made and data is collected, reset the modality-counter
 end
 

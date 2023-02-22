@@ -122,6 +122,45 @@ to end-trip
   set away? false
 end
 
+to drive-car [target-color]
+  let current-spot min-one-of spots [distance myself]
+  ifelse shared? [
+    ask current-spot [
+      ifelse shared-occupancy > 0
+        [set shared-occupancy shared-occupancy - 1]
+        [set occupancy occupancy - 1]
+    ]
+  ] [
+    ask current-spot [set occupancy occupancy - 1]
+  ]
+  move-to one-of patches with [pcolor = target-color]
+end
+
+to park-car
+  ifelse shared? [
+    let target-spot nobody
+    ifelse only-park-designated-spots?
+      [set target-spot min-one-of spots with [shared-occupancy < shared-capacity] [distance myself]] ;; TODO: When not parking on designated spots, they park top left. Give them a home spot of some kind
+      [set target-spot min-one-of spots with [shared-occupancy < shared-capacity or occupancy < capacity] [distance myself]]
+    move-to target-spot
+    ask target-spot [ifelse shared-occupancy < shared-capacity
+      [set shared-occupancy shared-occupancy + 1]
+      [set occupancy occupancy + 1]
+    ]
+  ] [
+    let target-spot min-one-of spots with [in-neighbourhood? and not private? and occupancy < capacity] [distance [owner] of myself]
+    if target-spot = nobody [
+      set target-spot one-of spots with [not in-neighbourhood?]
+      ask owner [
+        table:put modality-preference "car" table:get modality-preference "car" * (1 - preference-panelty-parking-outside-neighbourhood * 0.01)
+      ]
+    ]
+    move-to target-spot
+      ask target-spot [set occupancy occupancy + 1]
+  ]
+end
+
+
 ;; ##### MONTHLY FUNCTIONS ####
 
 to update-destinations
@@ -184,7 +223,7 @@ to buy-sell-car
   ]
   set min-monthly-costs 0
   set min-monthly-costs-car 0
-end 
+end
 
 to update-preferences [contact-preferences]
   let alpha social-adoption-multiplier * adoption-speed
@@ -192,6 +231,7 @@ to update-preferences [contact-preferences]
     [key] -> table:put modality-preference key (table:get modality-preference key * (1 - alpha) + table:get contact-preferences key * alpha)
   ]
 end
+
 
 ;; ##### YEARLY FUNCTIONS ####
 

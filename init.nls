@@ -1,5 +1,6 @@
 ;; ##### SETUP FUNCTIONS ####
 
+;; ### SPATIAL: MAP, SPOTS, STATIONS AND VIRTUAL LOCATIONS
 to load
   set projection "WGS_84_Geographic"
   set parking-dataset gis:load-dataset "GIS_data/parking.geojson"
@@ -8,6 +9,17 @@ to load
   set houses-dataset gis:load-dataset "GIS_data/houses.geojson"
   set station-dataset gis:load-dataset "GIS_data/Ede-station.geojson"
   gis:set-world-envelope (list 5.6716 5.6860 52.0280 52.0206)
+end
+
+to draw
+  gis:set-drawing-color grey
+  gis:fill residential-dataset 0
+  gis:set-drawing-color green
+  gis:fill grass-dataset 0
+  gis:set-drawing-color red
+  gis:fill parking-dataset 0
+  gis:set-drawing-color blue
+  gis:fill houses-dataset 0
 end
 
 to setup-spots
@@ -92,7 +104,8 @@ to setup-virtual-locations
   table:put virtual-locations "shared-car" green
 end
 
-;; TODO: Also create virtual spots for residents to travel to when traveling with shared car, etc.
+
+;; ### AGENTS: HOUSEHOLD AND RESIDENTS (INCL. SOCIAL NETWORK)
 
 to setup-households
   foreach gis:feature-list-of houses-dataset [ this-vector-feature ->
@@ -218,6 +231,34 @@ to reset-modality-counter
   ]
 end
 
+to setup-contacts
+  ;; Setup neighbours
+  let n-neighbours random-poisson average-neighbour-contacts  ;; Note that poisson might not be the ideal distribution
+  set neighbours-contacts up-to-n-of n-neighbours residents in-radius 3
+  ;; TODO: Maybe consider age
+
+  ;; Setup contacts for parents with childeren of same age
+  set parent-contacts n-of 0 residents
+  if parent? [
+    ;; Get ages of own childeren
+    let childeren residents with [household-nr = [household-nr] of myself and not parent? and age <= 12]
+    let ages sort [age] of childeren
+
+    ask childeren [
+      let peers residents with [abs(age - [age] of myself) <= 1] ;; Max one year age difference
+      let peer-parents residents with [parent? and member? household-nr [household-nr] of peers]
+      let n-peers random-poisson average-parent-contacts-per-child
+      if n-peers >= 1 [
+        let new-parents-contacts up-to-n-of n-peers peer-parents
+        set parent-contacts (turtle-set parent-contacts new-parents-contacts)
+      ]
+    ]
+  ]
+end
+
+
+;; ### OBJECTS: CARS AND DESTINATIONS
+
 to setup-cars
   ;; If the preferred mode of transport is the car, a resident gets a car
   let gets-car? false ;; initialize variable
@@ -260,82 +301,6 @@ to set-car-properties [is-shared?]
        set mileage age * (5000 + random 10000)]
   ]
   park-car
-end
-
-to park-car
-  ifelse shared? [
-    let target-spot nobody
-    ifelse only-park-designated-spots?
-      [set target-spot min-one-of spots with [shared-occupancy < shared-capacity] [distance myself]] ;; TODO: When not parking on designated spots, they park top left. Give them a home spot of some kind
-      [set target-spot min-one-of spots with [shared-occupancy < shared-capacity or occupancy < capacity] [distance myself]]
-    move-to target-spot
-    ask target-spot [ifelse shared-occupancy < shared-capacity
-      [set shared-occupancy shared-occupancy + 1]
-      [set occupancy occupancy + 1]
-    ]
-  ] [
-    let target-spot min-one-of spots with [in-neighbourhood? and not private? and occupancy < capacity] [distance [owner] of myself]
-    if target-spot = nobody [
-      set target-spot one-of spots with [not in-neighbourhood?]
-      ask owner [
-        table:put modality-preference "car" table:get modality-preference "car" * (1 - preference-panelty-parking-outside-neighbourhood * 0.01)
-      ]
-    ]
-    move-to target-spot
-      ask target-spot [set occupancy occupancy + 1]
-  ]
-  
-end
-
-to drive-car [target-color]
-  let current-spot min-one-of spots [distance myself]
-  ifelse shared? [
-    ask current-spot [
-      ifelse shared-occupancy > 0
-        [set shared-occupancy shared-occupancy - 1]
-        [set occupancy occupancy - 1]
-    ]
-  ] [
-    ask current-spot [set occupancy occupancy - 1]
-  ]
-  move-to one-of patches with [pcolor = target-color]
-end
-;;[owner shared? age yearly-costs km-costs mileage lease? in-use?]
-
-to draw
-  gis:set-drawing-color grey
-  gis:fill residential-dataset 0
-  gis:set-drawing-color green
-  gis:fill grass-dataset 0
-  gis:set-drawing-color red
-  gis:fill parking-dataset 0
-  gis:set-drawing-color blue
-  gis:fill houses-dataset 0
-end
-
-to setup-contacts
-  ;; Setup neighbours
-  let n-neighbours random-poisson average-neighbour-contacts  ;; Note that poisson might not be the ideal distribution
-  set neighbours-contacts up-to-n-of n-neighbours residents in-radius 3
-  ;; TODO: Maybe consider age
-
-  ;; Setup contacts for parents with childeren of same age
-  set parent-contacts n-of 0 residents
-  if parent? [
-    ;; Get ages of own childeren
-    let childeren residents with [household-nr = [household-nr] of myself and not parent? and age <= 12]
-    let ages sort [age] of childeren
-
-    ask childeren [
-      let peers residents with [abs(age - [age] of myself) <= 1] ;; Max one year age difference
-      let peer-parents residents with [parent? and member? household-nr [household-nr] of peers]
-      let n-peers random-poisson average-parent-contacts-per-child
-      if n-peers >= 1 [
-        let new-parents-contacts up-to-n-of n-peers peer-parents
-        set parent-contacts (turtle-set parent-contacts new-parents-contacts)
-      ]
-    ]
-  ]
 end
 
 to setup-destinations
