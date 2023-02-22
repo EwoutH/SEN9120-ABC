@@ -212,6 +212,12 @@ to set-resident-properties
   table:put modality-counter "shared-car" 0
 end
 
+to reset-modality-counter
+  foreach table:keys modality-counter [
+    [key] -> table:put modality-counter key 0
+  ]
+end
+
 to setup-cars
   ;; If the preferred mode of transport is the car, a resident gets a car
   let gets-car? false ;; initialize variable

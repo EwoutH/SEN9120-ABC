@@ -73,16 +73,18 @@ to go-daily
 end
 
 to go-monthly
-
   ;; - Pay train or car-sharing fees
   ;; - Consider new subscriptions or canceling ones
   ;; Consider buying or selling a car
   ask residents [buy-sell-car]
+  ask residents [buy-sell-subscriptions]
   ;; - Reset monthly costs
 
   ;; - OUT-OF-SCOPE: Update destinations (add some and remove some)
   ;; - OUT-OF-SCOPE: Add and remove connections (meet new people and lose contact with)
   set month month + 1
+  tick  ;; The tick is done each monthly, because that's the temporal resolution we wan't to gather data (KPIs) for our experiments with
+  ask residents [reset-modality-counter]   ;; After subscription decisions are made and data is collected, reset the modality-counter
 end
 
 to go-yearly
@@ -90,7 +92,6 @@ to go-yearly
   move-households
   move-out-child
   set year year + 1
-  tick
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -315,25 +316,25 @@ PENS
 "total" 5.0 1 -13840069 true "" "histogram [age] of residents"
 
 SLIDER
-24
-852
-196
-885
+15
+950
+187
+983
 days-in-month
 days-in-month
 2
 31
-4.0
+31.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-24
-888
-196
-921
+15
+986
+187
+1019
 months-in-year
 months-in-year
 2
@@ -345,10 +346,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-206
-853
-286
-898
+197
+951
+277
+996
 days in year
 days-in-year
 17
@@ -389,10 +390,10 @@ year
 11
 
 SLIDER
-21
-760
-250
-793
+16
+830
+245
+863
 chance-of-household-moving
 chance-of-household-moving
 0
@@ -529,10 +530,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-22
-795
-203
-828
+17
+865
+198
+898
 chance-of-moving-out
 chance-of-moving-out
 5
@@ -791,10 +792,10 @@ mean [other-days] of residents
 11
 
 TEXTBOX
-28
-926
-264
-954
+19
+1024
+255
+1052
 TODO: Make time compression working.
 11
 0.0
@@ -952,22 +953,25 @@ preference-panelty-parking-outside-neighbourhood
 HORIZONTAL
 
 PLOT
-1587
-333
-1787
-483
-plot 1
-NIL
-NIL
+1605
+312
+1882
+464
+Trips per modality
+month
+trips
 0.0
-1.0
+12.0
 0.0
-1.0
+1000.0
 true
-false
+true
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot mean [table:get modality-preference \"car\"] of residents"
+"car" 1.0 0 -16777216 true "" "plot sum [table:get modality-counter \"car\"] of residents"
+"shared-car" 1.0 0 -13840069 true "" "plot sum [table:get modality-counter \"shared-car\"] of residents"
+"bike" 1.0 0 -13791810 true "" "plot sum [table:get modality-counter \"bike\"] of residents"
+"public-transport" 1.0 0 -1184463 true "" "plot sum [table:get modality-counter \"public-transport\"] of residents"
 
 MONITOR
 1611
@@ -1039,6 +1043,53 @@ average-daily-parent-contacts
 1
 NIL
 HORIZONTAL
+
+SLIDER
+17
+770
+250
+803
+subscription-monthly-buy-sell-chance
+subscription-monthly-buy-sell-chance
+0
+100
+25.0
+1
+1
+%
+HORIZONTAL
+
+TEXTBOX
+19
+931
+202
+959
+Don't change, not implemented yet.
+11
+0.0
+1
+
+MONITOR
+10
+346
+139
+391
+shared car subscriptions
+count residents with [shared-car-subscription]
+17
+1
+11
+
+MONITOR
+146
+348
+302
+393
+public transport subscriptions
+count residents with [public-transport-subscription]
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?

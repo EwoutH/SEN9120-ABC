@@ -125,11 +125,31 @@ end
 ;; ##### MONTHLY FUNCTIONS ####
 
 to update-destinations
+  ;; TODO: This function can be used to extend the model by letting residents change up some of their destinations, by dropping, replacing and/or adding new destinations to their destinations lists
+  ;; It can be called at go-monthly
+end
 
+to update-connections
+  ;; TODO: This function can be used to extend the model by letting residents change up some of their connections, by dropping, replacing and/or adding new residents to their neighbours-contacts and parent-contacts lists
+  ;; It can be called at go-monthly
 end
 
 to buy-sell-subscriptions
-  
+  ;; Buy or sell shared car subscription 
+  if random-float 1 < subscription-monthly-buy-sell-chance / 100 [    ;; Chance to reconsider shared-car subscription this month
+    let shared-car-trips table:get modality-counter "shared-car"
+    ifelse shared-car-subscription
+      [if shared-car-trips <= 1 [set shared-car-subscription false]]  ;; Sell if 1 or less trips are done this month
+      [if shared-car-trips >= 4 [set shared-car-subscription true]]   ;; Buy if 4 or more trips are done this month
+  ]
+  ;; Buy or sell public tranport subscription 
+  if random-float 1 < subscription-monthly-buy-sell-chance / 100 [                ;; Chance to reconsider public-transport subscription this month
+    let public-transport-trips table:get modality-counter "public-transport"
+    ifelse public-transport-subscription
+      [if public-transport-trips <= 1 [set public-transport-subscription false]]  ;; Sell if 1 or less trips are done this month
+      [if public-transport-trips >= 4 [set public-transport-subscription true]]   ;; Buy if 4 or more trips are done this month
+  ]
+  ;; TODO: Make time compressions (of days in a month) working by normalizing the threshold values
 end
 
 ;; Function for selling and buying cars, the chance of selling or buying a car is determined by the ownership of car first, then the function checks if costs can be saved by choosing 
