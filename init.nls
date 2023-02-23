@@ -113,9 +113,7 @@ to setup-households
     let loc gis:location-of center
 
     if length loc >= 2 [setup-household loc]
-    ]
-
-  ask n-of 10 households [type "Household ages: " ask residents with [household-nr = myself] [type age type ", "] type "child wish: " print child-wish]
+  ]
 end
 
 to setup-household [loc]
