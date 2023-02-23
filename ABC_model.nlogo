@@ -45,12 +45,10 @@ to setup
   reset-ticks
 end
 
-to go  ;; one year
-  repeat months-in-year [
-    repeat days-in-month [go-daily]
-    go-monthly
-  ]
-  go-yearly
+to go  ;; one monthly
+  repeat days-in-month [go-daily]
+  go-monthly
+  if ticks mod months-in-year = 0 [go-yearly]
 end
 
 to go-daily
@@ -93,6 +91,7 @@ to go-monthly
 
   update-metrics
   set month month + 1
+  type "Finished month: " print month
   tick                                     ;; The tick is done each monthly, because that's the temporal resolution we wan't to gather data (KPIs) for our experiments with
   ask residents [reset-modality-counter]   ;; After subscription decisions are made and data is collected, reset the modality-counter
 end
@@ -102,6 +101,7 @@ to go-yearly
   move-households
   move-out-child
   set year year + 1
+  type "Finished year: " print year
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
