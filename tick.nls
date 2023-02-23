@@ -273,3 +273,14 @@ to update-labels
     [set label (word (capacity - occupancy) "-" (shared-capacity - shared-occupancy))]
   ]
 end
+
+to update-metrics
+  set monthly-car-trips sum [table:get modality-counter "car"] of residents
+  set monthly-shared-car-trips sum [table:get modality-counter "shared-car"] of residents
+  set monthly-bike-trips sum [table:get modality-counter "bike"] of residents
+  set monthly-public-transport-trips sum [table:get modality-counter "public-transport"] of residents
+  
+  set shared-car-subscriptions count residents with [shared-car-subscription]
+  set public-transport-subscriptions count residents with [public-transport-subscription]
+  
+end

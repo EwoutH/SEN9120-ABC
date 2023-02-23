@@ -1,6 +1,14 @@
 __includes ["init.nls" "tick.nls"]
 extensions [gis rnd table]
-globals [parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection day month year days-in-year patch-distance walking-speed virtual-locations]
+globals [
+  ;; Actual variables used in the model
+  parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection
+  day month year days-in-year patch-distance walking-speed virtual-locations
+  ;; Metrics (KPIs)
+  monthly-car-trips monthly-shared-car-trips monthly-bike-trips monthly-public-transport-trips
+  shared-car-subscriptions public-transport-subscriptions
+
+]
 
 breed [spots spot]
 breed [households household]
@@ -83,6 +91,7 @@ to go-monthly
   ;; OUT-OF-SCOPE: Add and remove connections (meet new people and lose contact with)
   ;; ask residents [update-destinations]
 
+  update-metrics
   set month month + 1
   tick                                     ;; The tick is done each monthly, because that's the temporal resolution we wan't to gather data (KPIs) for our experiments with
   ask residents [reset-modality-counter]   ;; After subscription decisions are made and data is collected, reset the modality-counter
@@ -213,9 +222,9 @@ count residents with [not parent?]
 
 MONITOR
 175
-303
+301
 260
-348
+346
 total child wish
 sum [child-wish] of households
 17
@@ -340,7 +349,7 @@ months-in-year
 months-in-year
 2
 12
-3.0
+12.0
 1
 1
 NIL
@@ -444,7 +453,7 @@ variance-distance-work
 variance-distance-work
 0
 800
-443.0
+440.0
 1
 1
 NIL
@@ -845,7 +854,7 @@ Value of (travel) time (Gamma distributed)
 SLIDER
 1489
 715
-1661
+1688
 748
 initial-car-preference
 initial-car-preference
@@ -858,15 +867,30 @@ NIL
 HORIZONTAL
 
 SLIDER
-1489
-758
-1661
-791
+1488
+796
+1688
+829
 initial-bike-preference
 initial-bike-preference
 0
 1
-0.5
+0.45
+0.01
+1
+NIL
+HORIZONTAL
+
+SLIDER
+1488
+838
+1691
+871
+initial-public-transport-preference
+initial-public-transport-preference
+0
+1
+0.35
 0.01
 1
 NIL
@@ -874,29 +898,14 @@ HORIZONTAL
 
 SLIDER
 1489
-800
-1715
-833
-initial-public-transport-preference
-initial-public-transport-preference
-0
-1
-0.5
-0.01
-1
-NIL
-HORIZONTAL
-
-SLIDER
-1490
-843
-1690
-876
+756
+1689
+789
 initial-shared-car-preference
 initial-shared-car-preference
 0
 1
-0.5
+0.55
 0.01
 1
 NIL
@@ -921,7 +930,7 @@ amount-of-shared-cars
 amount-of-shared-cars
 0
 168
-40.0
+8.0
 8
 1
 NIL
@@ -939,10 +948,10 @@ only-park-designated-spots?
 -1000
 
 SLIDER
-1494
-916
-1799
-949
+1488
+910
+1793
+943
 preference-panelty-parking-outside-neighbourhood
 preference-panelty-parking-outside-neighbourhood
 0
@@ -969,17 +978,17 @@ true
 true
 "" ""
 PENS
-"car" 1.0 0 -16777216 true "" "plot sum [table:get modality-counter \"car\"] of residents"
-"shared-car" 1.0 0 -13840069 true "" "plot sum [table:get modality-counter \"shared-car\"] of residents"
-"bike" 1.0 0 -13791810 true "" "plot sum [table:get modality-counter \"bike\"] of residents"
-"public-transport" 1.0 0 -1184463 true "" "plot sum [table:get modality-counter \"public-transport\"] of residents"
+"car" 1.0 0 -16777216 true "" "plot monthly-car-trips"
+"shared-car" 1.0 0 -13840069 true "" "plot monthly-shared-car-trips"
+"bike" 1.0 0 -13791810 true "" "plot monthly-bike-trips"
+"public-transport" 1.0 0 -1184463 true "" "plot monthly-public-transport-trips"
 
 MONITOR
 1611
 519
-1956
+1784
 564
-NIL
+mean modality-preference car
 mean [table:get modality-preference \"car\"] of residents
 5
 1
@@ -1009,7 +1018,7 @@ parking-permit-costs
 parking-permit-costs
 0
 200
-93.0
+0.0
 1
 1
 €
@@ -1073,21 +1082,21 @@ Don't change, not implemented yet.
 MONITOR
 10
 346
-139
+140
 391
 shared car subscriptions
-count residents with [shared-car-subscription]
+shared-car-subscriptions
 17
 1
 11
 
 MONITOR
-146
-348
-302
-393
+142
+347
+294
+392
 public transport subscriptions
-count residents with [public-transport-subscription]
+public-transport-subscriptions
 17
 1
 11
