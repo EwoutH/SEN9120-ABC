@@ -13,8 +13,8 @@ default_values = {
     "months-in-year": 12,
 }
 
-replications = 3
-ticks = 6  # Months
+replications = 5
+ticks = 12  # Months
 gui = False
 
 exp_nr = 2  # Change this to run different experiment
