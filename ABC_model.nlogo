@@ -958,7 +958,7 @@ preference-panelty-parking-outside-neighbourhood
 preference-panelty-parking-outside-neighbourhood
 0
 10
-1.0
+0.5
 0.1
 1
 %
