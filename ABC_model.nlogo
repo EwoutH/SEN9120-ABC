@@ -877,7 +877,7 @@ initial-bike-preference
 initial-bike-preference
 0
 1
-0.45
+0.5
 0.01
 1
 NIL
@@ -907,7 +907,7 @@ initial-shared-car-preference
 initial-shared-car-preference
 0
 1
-0.55
+0.5
 0.01
 1
 NIL
