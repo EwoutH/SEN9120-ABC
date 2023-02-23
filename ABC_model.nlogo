@@ -1,9 +1,9 @@
 __includes ["init.nls" "tick.nls"]
-extensions [gis rnd table]
+extensions [gis rnd table stats]
 globals [
   ;; Actual variables used in the model
   parking-dataset residential-dataset grass-dataset houses-dataset station-dataset projection
-  day month year days-in-year patch-distance walking-speed virtual-locations
+  day month year days-in-year patch-distance walking-speed virtual-locations pref-table
   ;; Metrics (KPIs)
   monthly-car-trips monthly-shared-car-trips monthly-bike-trips monthly-public-transport-trips
   shared-car-subscriptions public-transport-subscriptions
@@ -37,10 +37,12 @@ to setup
   setup-shared-spots
   setup-station
   setup-virtual-locations
+  set pref-table stats:newtable
   setup-households
   setup-shared-cars
   ask residents [setup-contacts]
   update-labels
+  update-metrics
   set days-in-year days-in-month * months-in-year
   reset-ticks
 end
@@ -326,10 +328,10 @@ PENS
 "total" 5.0 1 -13840069 true "" "histogram [age] of residents"
 
 SLIDER
-15
-950
-187
-983
+8
+996
+180
+1029
 days-in-month
 days-in-month
 2
@@ -341,10 +343,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-15
-986
-187
-1019
+8
+1032
+180
+1065
 months-in-year
 months-in-year
 2
@@ -356,10 +358,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-197
-951
-277
-996
+190
+997
+270
+1042
 days in year
 days-in-year
 17
@@ -400,10 +402,10 @@ year
 11
 
 SLIDER
-16
-830
-245
-863
+5
+887
+234
+920
 chance-of-household-moving
 chance-of-household-moving
 0
@@ -525,10 +527,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-18
-607
-247
-640
+16
+602
+245
+635
 average-parent-contacts-per-child
 average-parent-contacts-per-child
 0
@@ -540,10 +542,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-17
-865
-198
-898
+6
+922
+187
+955
 chance-of-moving-out
 chance-of-moving-out
 5
@@ -765,10 +767,10 @@ km/h
 HORIZONTAL
 
 SLIDER
-1171
-716
-1365
-749
+1140
+715
+1334
+748
 social-adoption-multiplier
 social-adoption-multiplier
 0
@@ -802,20 +804,20 @@ mean [other-days] of residents
 11
 
 TEXTBOX
-19
-1024
-255
-1052
+12
+1070
+248
+1098
 TODO: Make time compression working.
 11
 0.0
 1
 
 SLIDER
-1172
-833
-1362
-866
+1141
+832
+1331
+865
 mean-value-of-time
 mean-value-of-time
 0
@@ -827,10 +829,10 @@ mean-value-of-time
 HORIZONTAL
 
 SLIDER
-1173
-872
-1365
-905
+1142
+871
+1334
+904
 variance-value-of-time
 variance-value-of-time
 0
@@ -842,20 +844,20 @@ NIL
 HORIZONTAL
 
 TEXTBOX
-1174
-807
-1417
-835
+1143
+806
+1386
+834
 Value of (travel) time (Gamma distributed)
 11
 0.0
 1
 
 SLIDER
-1489
-715
-1688
-748
+1387
+726
+1586
+759
 initial-car-preference
 initial-car-preference
 0
@@ -867,10 +869,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-1488
-796
-1688
-829
+1386
+807
+1586
+840
 initial-bike-preference
 initial-bike-preference
 0
@@ -882,10 +884,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-1488
-838
-1691
-871
+1386
+849
+1589
+882
 initial-public-transport-preference
 initial-public-transport-preference
 0
@@ -897,10 +899,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-1489
-756
-1689
-789
+1387
+767
+1587
+800
 initial-shared-car-preference
 initial-shared-car-preference
 0
@@ -912,10 +914,10 @@ NIL
 HORIZONTAL
 
 TEXTBOX
-1492
-684
-1642
-710
+1390
+695
+1540
+721
 Means for initial individual preference distribution
 10
 0.0
@@ -948,10 +950,10 @@ only-park-designated-spots?
 -1000
 
 SLIDER
-1488
-910
-1793
-943
+1486
+974
+1791
+1007
 preference-panelty-parking-outside-neighbourhood
 preference-panelty-parking-outside-neighbourhood
 0
@@ -995,15 +997,15 @@ mean [table:get modality-preference \"car\"] of residents
 11
 
 SLIDER
-16
-518
-221
-551
+12
+513
+217
+546
 remove-spots-percentage
 remove-spots-percentage
 0
 100
-40.0
+0.0
 1
 1
 %
@@ -1025,10 +1027,10 @@ parking-permit-costs
 HORIZONTAL
 
 SLIDER
-16
-667
-248
-700
+14
+663
+246
+696
 average-daily-neighbour-contacts
 average-daily-neighbour-contacts
 0
@@ -1040,10 +1042,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-18
-706
-229
-739
+13
+702
+224
+735
 average-daily-parent-contacts
 average-daily-parent-contacts
 0
@@ -1055,10 +1057,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-17
-770
-250
-803
+8
+830
+241
+863
 subscription-monthly-buy-sell-chance
 subscription-monthly-buy-sell-chance
 0
@@ -1070,10 +1072,10 @@ subscription-monthly-buy-sell-chance
 HORIZONTAL
 
 TEXTBOX
-19
-931
-202
-959
+12
+977
+195
+1005
 Don't change, not implemented yet.
 11
 0.0
@@ -1100,6 +1102,66 @@ public-transport-subscriptions
 17
 1
 11
+
+SLIDER
+1625
+846
+1847
+879
+initial-shared-car-subscriptions
+initial-shared-car-subscriptions
+0
+100
+5.0
+1
+1
+%
+HORIZONTAL
+
+SLIDER
+1625
+808
+1848
+841
+initial-public-transport-subscriptions
+initial-public-transport-subscriptions
+0
+100
+20.0
+1
+1
+%
+HORIZONTAL
+
+SLIDER
+1624
+723
+1824
+756
+initial-car-chance-parent
+initial-car-chance-parent
+0
+100
+65.0
+1
+1
+%
+HORIZONTAL
+
+SLIDER
+1623
+760
+1825
+793
+initial-car-chance-child
+initial-car-chance-child
+0
+100
+20.0
+1
+1
+%
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?

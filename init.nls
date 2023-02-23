@@ -127,6 +127,10 @@ to setup-household [loc]
     set distance-station distance one-of patches with [station?] * patch-distance
 
     setup-residents
+
+    ;; Setup cars and subscriptions for household members. This is done here because otherwise not all household residents have their properties yet,
+    ;; and thus the modality preference percentiles can't be calculated (due to how hatch works)
+    ask residents with [household-nr = myself] [setup-cars-subscriptions]
     
   ]
 end
@@ -140,7 +144,6 @@ to setup-residents
     set age approximate-adults-age + random 4 - 3
     set color yellow
     set-resident-properties
-    setup-cars
     setup-destinations
     setup-contacts
   ]
@@ -160,7 +163,6 @@ to setup-residents
           set age predicted-child-age
           set color orange
           set-resident-properties
-          setup-cars
           setup-destinations
           setup-contacts
         ]
@@ -174,8 +176,6 @@ to set-resident-properties
   set heading random 360
   set household-nr myself
   set away? false
-  set public-transport-subscription false
-  set shared-car-subscription false
   
   ;; Set up normal distributions for the initial individual modality preferences.
   ;; Limitation: normal distributions are not completely acurate in the real world.
@@ -257,21 +257,35 @@ end
 
 ;; ### OBJECTS: CARS AND DESTINATIONS
 
-to setup-cars
-  ;; If the preferred mode of transport is the car, a resident gets a car
-  let gets-car? false ;; initialize variable
+to setup-cars-subscriptions
+  ;; Add the residents preferences to the global table
+  stats:add pref-table (list
+    table:get modality-preference "shared-car"         ;; Row 0
+    table:get modality-preference "public-transport"   ;; Row 1
+    table:get modality-preference "car"                ;; Row 2
+  )
   
-  let preferred-mode-value max table:values modality-preference 
-  if age >= 18 and table:get modality-preference "car" = preferred-mode-value [set gets-car? true]
+  ;; Give residents a subscription if they have a higher preference than the initial percentile of the current population
+  set shared-car-subscription table:get modality-preference "shared-car" < stats:quantile pref-table 0 initial-shared-car-subscriptions
+  set public-transport-subscription table:get modality-preference "public-transport" < stats:quantile pref-table 1 initial-public-transport-subscriptions
+  
+  ;; Give residents a car if they have a higher preference than the initial percentile of the current population
+  let gets-car? false
+  if age > 18 [
+    ifelse parent?
+      [set gets-car? table:get modality-preference "car" < stats:quantile pref-table 2 initial-car-chance-parent]
+      [set gets-car? table:get modality-preference "car" < stats:quantile pref-table 2 initial-car-chance-child]
+  ]
 
+  ;; If they get a car, in
   ifelse gets-car?
-    [set owns-car? true
-      hatch-cars 1 [set-car-properties false]
-      set car-nr one-of cars with [owner = myself]
-    ]
-    [set owns-car? false
-      set car-nr nobody  
-    ]
+  [ set owns-car? true
+    hatch-cars 1 [set-car-properties false]
+    set car-nr one-of cars with [owner = myself]
+  ]
+  [ set owns-car? false
+    set car-nr nobody  
+  ]
 end
 
 to setup-shared-cars
