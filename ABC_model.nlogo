@@ -862,7 +862,7 @@ initial-car-preference
 initial-car-preference
 0
 1
-0.65
+0.7
 0.01
 1
 NIL
@@ -892,7 +892,7 @@ initial-public-transport-preference
 initial-public-transport-preference
 0
 1
-0.35
+0.3
 0.01
 1
 NIL
@@ -1112,7 +1112,7 @@ initial-shared-car-subscriptions
 initial-shared-car-subscriptions
 0
 100
-5.0
+8.0
 1
 1
 %
@@ -1127,7 +1127,7 @@ initial-public-transport-subscriptions
 initial-public-transport-subscriptions
 0
 100
-20.0
+25.0
 1
 1
 %
