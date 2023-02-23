@@ -8,17 +8,23 @@ default_values = {
     "parking-permit-costs": 0,
     "amount-of-shared-cars": 8,
     "remove-spots-percentage": 0,
+    "fixed-car-costs": 200,             # Default 257
+    "mean-value-of-time": 11.25,        # Default 8.75
+    "mean-public-transport-speed": 30,  # Default 34.8
+
+    "initial-car-preference": 0.7,                 # Default 0.65
+    "initial-public-transport-preference": 0.3,    # Default 0.35
 
     "days-in-month": 31,
     "months-in-year": 12,
 }
 
 replications = 5
-ticks = 12  # Months
+ticks = 25  # Months
 gui = False
 
-exp_nr = 2  # Change this to run different experiment
-exp_names = ["8-sc-default", "32-sc-22-pp-20p-removed", "128-sc-93-pp-40p-removed"]
+exp_nr = 0  # Change this to run different experiment
+exp_names = ["balanced-car-07-pt-03-fc200-vot11_25-pts30"]
 exp_name = f"{exp_nr}_{exp_names[exp_nr]}"
 exp = {
     "parking-permit-costs": [0, 22, 93],
@@ -49,7 +55,11 @@ for var, val in exp.items():
 print("")
 
 for i in range(replications):
-    # Change sliders (global variables)
+    # Change sliders (global variables) with default values
+    for var, val in default_values.items():
+        netlogo.command(f"set {var} {val}")
+
+    # Change sliders (global variables) with experiment values
     for var, val in exp.items():
         netlogo.command(f"set {var} {val[exp_nr]}")
 
