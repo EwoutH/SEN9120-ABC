@@ -23,7 +23,7 @@ residents-own [
   adoption-speed modality-preference initial-modality-preference preference-utility-tradeoff value-of-time total-car-costs total-costs modality-counter public-transport-subscription shared-car-subscription
   away?
 ]
-cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use?]
+cars-own [owner shared? age yearly-costs km-costs mileage lease? in-use? current-driver]
 
 ;; ##### HIGH-LEVEL FUNCTIONS ####
 

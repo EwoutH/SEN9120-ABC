@@ -299,6 +299,7 @@ to set-car-properties [is-shared?]
   set size 0.5
   set shape "car"
   set in-use? false 
+  set current-driver nobody
   
   ifelse shared? [
     set owner nobody

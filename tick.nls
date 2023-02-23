@@ -95,6 +95,14 @@ to start-trip [work?]
       drive-car table:get virtual-locations modality
     ]
   ]
+  ;; Take shared car
+  if modality = "shared-car" [
+    ask min-one-of cars with [not in-use? and shared?] [distance myself] [
+      set in-use? true
+      set current-driver myself
+      drive-car table:get virtual-locations modality
+    ]
+  ]  
   
   ;; Update destination table with the last modality
   ifelse modality = table:get destination "last-modality"
@@ -119,6 +127,11 @@ to end-trip
     set in-use? false
     park-car
   ]]]
+  ask cars with [shared? and in-use? and current-driver = myself] [
+    set in-use? false
+    set current-driver nobody
+    park-car
+  ]
   set away? false
 end
 
