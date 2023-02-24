@@ -205,7 +205,7 @@ to set-resident-properties
   if adoption-speed <= 0 [set adoption-speed 0.01]
   if adoption-speed > 1 [set adoption-speed 1]
   
-  set preference-utility-tradeoff random-normal 0.5 0.15   ;; 1 means 100% utility based, 0 means 100% modality preference bases
+  set preference-utility-tradeoff random-normal mean-preference-utility-tradeoff 0.15   ;; 1 means 100% utility based, 0 means 100% modality preference bases
   if preference-utility-tradeoff < 0 [set preference-utility-tradeoff 0]
   if preference-utility-tradeoff > 1 [set preference-utility-tradeoff 1]
   

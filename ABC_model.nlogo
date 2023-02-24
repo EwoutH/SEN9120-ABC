@@ -6,8 +6,7 @@ globals [
   day month year days-in-year patch-distance walking-speed virtual-locations pref-table
   ;; Metrics (KPIs)
   monthly-car-trips monthly-shared-car-trips monthly-bike-trips monthly-public-transport-trips
-  shared-car-subscriptions public-transport-subscriptions
-
+  shared-car-subscriptions public-transport-subscriptions mean-car-preference
 ]
 
 breed [spots spot]
@@ -815,9 +814,9 @@ TODO: Make time compression working.
 
 SLIDER
 1141
-832
+882
 1331
-865
+915
 mean-value-of-time
 mean-value-of-time
 0
@@ -830,9 +829,9 @@ HORIZONTAL
 
 SLIDER
 1142
-871
+921
 1334
-904
+954
 variance-value-of-time
 variance-value-of-time
 0
@@ -844,10 +843,10 @@ NIL
 HORIZONTAL
 
 TEXTBOX
-1143
-806
-1386
-834
+1142
+863
+1385
+891
 Value of (travel) time (Gamma distributed)
 11
 0.0
@@ -991,7 +990,7 @@ MONITOR
 1784
 564
 mean modality-preference car
-mean [table:get modality-preference \"car\"] of residents
+mean-car-preference
 5
 1
 11
@@ -1162,6 +1161,31 @@ initial-car-chance-child
 1
 %
 HORIZONTAL
+
+SLIDER
+1140
+793
+1340
+826
+mean-preference-utility-tradeoff
+mean-preference-utility-tradeoff
+0.4
+0.6
+0.5
+0.01
+1
+NIL
+HORIZONTAL
+
+TEXTBOX
+1143
+777
+1333
+805
+Higher means more utility focussed
+11
+0.0
+1
 
 @#$#@#$#@
 ## WHAT IS IT?

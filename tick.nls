@@ -296,4 +296,5 @@ to update-metrics
   set shared-car-subscriptions count residents with [shared-car-subscription]
   set public-transport-subscriptions count residents with [public-transport-subscription]
   
+  set mean-car-preference mean [table:get modality-preference "car"] of residents
 end
