@@ -953,8 +953,8 @@ SLIDER
 974
 1791
 1007
-preference-panelty-parking-outside-neighbourhood
-preference-panelty-parking-outside-neighbourhood
+preference-penalty-parking-outside-neighbourhood
+preference-penalty-parking-outside-neighbourhood
 0
 10
 0.5

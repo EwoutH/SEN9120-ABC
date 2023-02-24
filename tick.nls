@@ -165,7 +165,7 @@ to park-car
     if target-spot = nobody [
       set target-spot one-of spots with [not in-neighbourhood?]
       ask owner [
-        table:put modality-preference "car" table:get modality-preference "car" * (1 - preference-panelty-parking-outside-neighbourhood * 0.01)
+        table:put modality-preference "car" table:get modality-preference "car" * (1 - preference-penalty-parking-outside-neighbourhood * 0.01)
       ]
     ]
     move-to target-spot
