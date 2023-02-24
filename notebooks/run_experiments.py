@@ -8,12 +8,8 @@ default_values = {
     "parking-permit-costs": 0,
     "amount-of-shared-cars": 8,
     "remove-spots-percentage": 0,
-    "fixed-car-costs": 200,             # Default 257
     "mean-value-of-time": 11.25,        # Default 8.75
     "mean-public-transport-speed": 30,  # Default 34.8
-
-    "initial-car-preference": 0.7,                 # Default 0.65
-    "initial-public-transport-preference": 0.3,    # Default 0.35
 
     "days-in-month": 31,
     "months-in-year": 12,
@@ -24,21 +20,22 @@ ticks = 25  # Months
 gui = False
 
 exp_nr = 0  # Change this to run different experiment
-exp_names = ["balanced-car-07-pt-03-fc200-vot11_25-pts30"]
+exp_names = ["default_fixed", "parking-package-low", "parking-package-high"]
 exp_name = f"{exp_nr}_{exp_names[exp_nr]}"
 exp = {
     "parking-permit-costs": [0, 22, 93],
-    "amount-of-shared-cars": [8, 32, 128],
+    # "amount-of-shared-cars": [8, 32, 128],
     "remove-spots-percentage": [0, 20, 40],
 }
 
-modalities = ["car", "shared-car", "bike", "public-transport"]
+modalities = ["car", "shared-car", "public-transport", "bike"]
 
 series_reporters = [
+    *[f"monthly-{m}-trips" for m in modalities],
+    "count cars",
     "shared-car-subscriptions",
     "public-transport-subscriptions",
-    "count cars",
-    *[f"monthly-{m}-trips" for m in modalities],
+    "mean-car-preference",
 ]
 
 single_reporters = []
