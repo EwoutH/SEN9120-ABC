@@ -1112,7 +1112,7 @@ initial-shared-car-subscriptions
 initial-shared-car-subscriptions
 0
 100
-8.0
+2.0
 1
 1
 %
