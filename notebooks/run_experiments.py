@@ -15,16 +15,16 @@ default_values = {
     "months-in-year": 12,
 }
 
-replications = 5
-ticks = 25  # Months
+replications = 10
+ticks = 60  # Months
 gui = False
 
-exp_nr = 0  # Change this to run different experiment
-exp_names = ["default_fixed", "parking-package-low", "parking-package-high"]
+exp_nr = 2  # Change this to run different experiment
+exp_names = ["default", "all-low", "all-high"]
 exp_name = f"{exp_nr}_{exp_names[exp_nr]}"
 exp = {
-    "parking-permit-costs": [0, 22, 93],
-    # "amount-of-shared-cars": [8, 32, 128],
+    "parking-permit-costs": [0, 7.8, 31.2],
+    "amount-of-shared-cars": [8, 32, 128],
     "remove-spots-percentage": [0, 20, 40],
 }
 
